@@ -3,8 +3,18 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Transaction } from "../types";
 
 export const getFinancialAdvice = async (balance: number, transactions: Transaction[]) => {
-  // Fix: Strictly use process.env.API_KEY for initialization as per guidelines
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Проверка на наличие API_KEY для предотвращения падения приложения
+  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+  
+  if (!apiKey) {
+    console.warn("Gemini API Key is missing. Check your environment variables.");
+    return {
+      summary: "Искусственный интеллект Nova временно недоступен. Настройте API ключ.",
+      tips: ["Планируйте бюджет заранее", "Создайте финансовую подушку", "Диверсифицируйте накопления"]
+    };
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   const historyString = transactions
     .slice(0, 5)
@@ -36,13 +46,12 @@ export const getFinancialAdvice = async (balance: number, transactions: Transact
       }
     });
 
-    // Fix: access response.text property (not a method) and handle potential undefined
     const responseText = response.text?.trim() || "{}";
     return JSON.parse(responseText);
   } catch (error) {
     console.error("Gemini Error:", error);
     return {
-      summary: "Не удалось получить анализ. Проверьте подключение.",
+      summary: "Не удалось получить анализ от нейросети. Попробуйте позже.",
       tips: ["Следите за расходами вручную", "Установите лимиты", "Копите на мечту"]
     };
   }
