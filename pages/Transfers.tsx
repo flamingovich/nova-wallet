@@ -11,16 +11,43 @@ interface TransfersProps {
 
 type TransferStep = 'select-card' | 'select-type' | 'enter-details' | 'processing' | 'success';
 
-const NAMES = [
-  'Басак К. В.',
-  'Громов А. С.',
-  'Звягинцев И. О.',
-  'Милославская Е. Д.',
-  'Разумовский П. Н.',
-  'Верещагин Д. А.',
-  'Славянский М. Ю.',
-  'Архангельская В. И.'
+// Обширная база фамилий для генерации
+const SURNAMES = [
+  // Славянские
+  'Иванов', 'Смирнов', 'Кузнецов', 'Попов', 'Васильев', 'Петров', 'Соколов', 'Михайлов', 'Новиков', 'Федоров',
+  'Морозов', 'Волков', 'Алексеев', 'Лебедев', 'Семенов', 'Егоров', 'Павлов', 'Козлов', 'Степанов', 'Николаев',
+  'Орлов', 'Андреев', 'Макаров', 'Никитин', 'Захаров', 'Зайцев', 'Соловьев', 'Борисов', 'Яковлев', 'Григорьев',
+  'Романов', 'Воробьев', 'Сергеев', 'Кузьмин', 'Фролов', 'Александров', 'Дмитриев', 'Королев', 'Пономарев', 'Пантелеев',
+  'Антонов', 'Тарасов', 'Белов', 'Игнатов', 'Мельников', 'Денисов', 'Гаврилов', 'Тихонов', 'Абрамов', 'Щербаков',
+  // Кавказские и Азиатские
+  'Ахмедов', 'Намазов', 'Мамедов', 'Алиев', 'Гасанов', 'Абдуллаев', 'Ибрагимов', 'Султанов', 'Касимов', 'Рустамов',
+  'Умаров', 'Шарипов', 'Исмаилов', 'Джабраилов', 'Юсупов', 'Каримов', 'Мансуров', 'Бакиров', 'Гаджиев', 'Магомедов',
+  'Саидов', 'Азизов', 'Хасанов', 'Мурадов', 'Рахимов', 'Османов', 'Курбанов', 'Аскеров', 'Багиров', 'Гамидов',
+  'Джафаров', 'Заидов', 'Мусаев', 'Набиев', 'Пашаев', 'Рамазанов', 'Тагиев', 'Усубов', 'Халилов', 'Шахмаров',
+  // Другие
+  'Басак', 'Громов', 'Звягинцев', 'Милославский', 'Разумовский', 'Верещагин', 'Славянский', 'Беляев', 'Костин',
+  'Лазарев', 'Медведев', 'Ершов', 'Коновалов', 'Дроздов', 'Дементьев', 'Савельев', 'Родионов', 'Бирюков', 'Ефремов'
 ];
+
+const INITIALS_LETTERS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ';
+
+const generateRandomName = () => {
+  const surname = SURNAMES[Math.floor(Math.random() * SURNAMES.length)];
+  const i1 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
+  const i2 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
+  
+  // Добавляем окончание для женских фамилий случайным образом (если славянская)
+  const isFemale = Math.random() > 0.5;
+  let finalSurname = surname;
+  
+  if (isFemale && (surname.endsWith('ов') || surname.endsWith('ев') || surname.endsWith('ин'))) {
+    finalSurname += 'а';
+  } else if (isFemale && surname.endsWith('ий')) {
+    finalSurname = surname.replace('ий', 'ая');
+  }
+
+  return `${finalSurname} ${i1}. ${i2}.`;
+};
 
 const TRANSFER_TYPES = [
   { id: 'services', label: 'Оплата услуг', desc: 'ЖКХ, интернет, связь', icon: 'list', color: 'bg-orange-50 text-orange-600 border-orange-100' },
@@ -41,7 +68,6 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifiedName, setVerifiedName] = useState('');
 
-  // Форматирование номера карты во время ввода
   const handleCardInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length > 16) value = value.slice(0, 16);
@@ -49,15 +75,13 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
     const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
     setRecipient(formatted);
     
-    // Если введено 16 цифр - имитируем поиск
     if (value.length === 16 && selectedType?.id === 'card') {
       setIsVerifying(true);
       setVerifiedName('');
       setTimeout(() => {
         setIsVerifying(false);
-        const randomName = NAMES[Math.floor(Math.random() * NAMES.length)];
-        setVerifiedName(randomName);
-      }, 1500);
+        setVerifiedName(generateRandomName());
+      }, 1200);
     } else {
       setVerifiedName('');
       setIsVerifying(false);
@@ -71,7 +95,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
       setTimeout(() => {
         onSend(verifiedName || recipient || selectedType?.label || 'Перевод', amt, selectedCard.currency);
         setStep('success');
-      }, 4500); // 4.5 секунды для имитации реальной обработки
+      }, 3500);
     }
   };
 
@@ -89,7 +113,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
     switch (step) {
       case 'select-card':
         return (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-6 animate-fluid-fade">
             <div className="px-1">
               <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5">ВЫБЕРИТЕ СЧЕТ СПИСАНИЯ</h2>
               <div className="space-y-3">
@@ -98,7 +122,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     key={card.id}
                     style={{ animationDelay: `${idx * 0.1}s` }}
                     onClick={() => { setSelectedCard(card); setStep('select-type'); }}
-                    className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center justify-between shadow-sm active:scale-[0.98] transition-all group hover:border-blue-300 animate-slide-up"
+                    className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center justify-between shadow-sm active:scale-[0.98] transition-all group hover:border-blue-300 animate-fluid-up"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ background: card.color }}>
@@ -121,9 +145,9 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
 
       case 'select-type':
         return (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-6 animate-fluid-fade">
             <div className="px-1">
-              <div className="flex items-center gap-3 mb-6 animate-slide-down">
+              <div className="flex items-center gap-3 mb-6 animate-fluid-down">
                 <button onClick={() => setStep('select-card')} className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-blue-500 active:scale-90 transition-transform shadow-sm">
                    <Icons name="arrow-up" className="w-5 h-5 -rotate-90" />
                 </button>
@@ -136,7 +160,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     key={type.id}
                     style={{ animationDelay: `${idx * 0.05}s` }}
                     onClick={() => { setSelectedType(type); setStep('enter-details'); }}
-                    className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center gap-4 shadow-sm active:scale-[0.98] transition-all group hover:border-blue-200 animate-slide-up"
+                    className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center gap-4 shadow-sm active:scale-[0.98] transition-all group hover:border-blue-200 animate-fluid-up"
                   >
                     <div className={`w-12 h-12 rounded-[22px] ${type.color.split(' ')[0]} ${type.color.split(' ')[1]} border flex items-center justify-center transition-transform group-hover:scale-110`}>
                       <Icons name={type.icon} className="w-6 h-6" />
@@ -155,9 +179,9 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
 
       case 'enter-details':
         return (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-6 animate-fluid-fade">
             <div className="px-1">
-              <div className="flex items-center gap-3 mb-6 animate-slide-down">
+              <div className="flex items-center gap-3 mb-6 animate-fluid-down">
                 <button onClick={() => setStep('select-type')} className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-blue-500 active:scale-90 transition-transform shadow-sm">
                    <Icons name="arrow-up" className="w-5 h-5 -rotate-90" />
                 </button>
@@ -194,7 +218,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                       
                       {verifiedName && (
                         <div className="mt-2 px-6 py-3 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center gap-3 animate-fluid-scale">
-                           <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                           <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                            <p className="text-[11px] font-black text-emerald-700 uppercase tracking-widest">Получатель: {verifiedName}</p>
                         </div>
                       )}
@@ -234,7 +258,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
 
       case 'processing':
         return (
-          <div className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center animate-fade-in">
+          <div className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center animate-fluid-fade">
              <div className="relative w-32 h-32 flex items-center justify-center">
                 <div className="absolute inset-0 border-[6px] border-slate-50 rounded-full"></div>
                 <div className="absolute inset-0 border-[6px] border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -264,7 +288,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                </div>
                
                <div className="text-center space-y-4 px-10">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-[0.2em] animate-fade-in">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-[0.2em] animate-fluid-fade">
                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                      Операция успешна
                   </div>
@@ -273,7 +297,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     <span>{parseFloat(amount).toLocaleString('ru-RU', { maximumFractionDigits: 0 })}</span>
                     <span className="text-2xl opacity-5 mt-5">,00</span>
                   </div>
-                  <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                  <div className="animate-fluid-fade" style={{ animationDelay: '0.2s' }}>
                     <p className="text-slate-800 font-black text-2xl tracking-tight leading-none">{verifiedName || recipient || selectedType?.label}</p>
                   </div>
                </div>
@@ -314,7 +338,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in text-slate-800">
+    <div className="space-y-8 animate-fluid-fade text-slate-800">
       <div className="flex flex-col space-y-1 mt-2 animate-fluid-down">
         <h1 className="text-3xl font-black tracking-tight text-slate-900">Платежи</h1>
       </div>
