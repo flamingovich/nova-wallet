@@ -33,6 +33,12 @@ const Icons: React.FC<IconProps> = ({ name, className = "w-6 h-6" }) => {
           <path d="M22 2l-7 20-4-9-9-4 20-7z" />
         </svg>
       );
+    case 'qr':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><line x1="7" y1="7" x2="7" y2="7" /><line x1="17" y1="7" x2="17" y2="7" /><line x1="17" y1="17" x2="17" y2="17" /><line x1="7" y1="17" x2="7" y2="17" />
+        </svg>
+      );
     case 'credit-card':
       return (
         <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
@@ -105,6 +111,13 @@ const Icons: React.FC<IconProps> = ({ name, className = "w-6 h-6" }) => {
           <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        );
+    case 'arrow-up':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5" />
+            <polyline points="5 12 12 5 19 12" />
           </svg>
         );
     default:

@@ -11,25 +11,10 @@ interface TransfersProps {
 
 type TransferStep = 'select-card' | 'select-type' | 'enter-details' | 'processing' | 'success';
 
-// Еще более расширенная база фамилий
 const SURNAMES = [
-  // Славянские
   'Иванов', 'Смирнов', 'Кузнецов', 'Попов', 'Васильев', 'Петров', 'Соколов', 'Михайлов', 'Новиков', 'Федоров',
-  'Морозов', 'Волков', 'Алексеев', 'Лебедев', 'Семенов', 'Егоров', 'Павлов', 'Козлов', 'Степанов', 'Николаев',
-  'Орлов', 'Андреев', 'Макаров', 'Никитин', 'Захаров', 'Зайцев', 'Соловьев', 'Борисов', 'Яковлев', 'Григорьев',
-  'Романов', 'Воробьев', 'Сергеев', 'Кузьмин', 'Фролов', 'Александров', 'Дмитриев', 'Королев', 'Пономарев', 'Пантелеев',
-  'Антонов', 'Тарасов', 'Белов', 'Игнатов', 'Мельников', 'Денисов', 'Гаврилов', 'Тихонов', 'Абрамов', 'Щербаков',
-  'Басак', 'Громов', 'Звягинцев', 'Милославский', 'Разумовский', 'Верещагин', 'Славянский', 'Беляев', 'Костин',
-  'Лазарев', 'Медведев', 'Ершов', 'Коновалов', 'Дроздов', 'Дементьев', 'Савельев', 'Родионов', 'Бирюков', 'Ефремов',
-  'Белозерский', 'Волконский', 'Оболенский', 'Трубецкой', 'Голицын', 'Шереметев', 'Юсупов', 'Строганов',
-  // Восточные, Кавказские, Азиатские
-  'Ахмедов', 'Намазов', 'Мамедов', 'Алиев', 'Гасанов', 'Абдуллаев', 'Ибрагимов', 'Султанов', 'Касимов', 'Рустамов',
-  'Умаров', 'Шарипов', 'Исмаилов', 'Джабраилов', 'Юсупов', 'Каримов', 'Мансуров', 'Бакиров', 'Гаджиев', 'Магомедов',
-  'Саидов', 'Азизов', 'Хасанов', 'Мурадов', 'Рахимов', 'Османов', 'Курбанов', 'Аскеров', 'Багиров', 'Гамидов',
-  'Джафаров', 'Заидов', 'Мусаев', 'Набиев', 'Пашаев', 'Рамазанов', 'Тагиев', 'Усубов', 'Халилов', 'Шахмаров',
-  'Керимов', 'Агаев', 'Асадов', 'Бабаев', 'Велиев', 'Гулиев', 'Дадашев', 'Закиров', 'Исаев', 'Маджидов',
-  'Расулов', 'Сафаров', 'Туманов', 'Фархадов', 'Хамзатов', 'Эйвазов', 'Якубов', 'Нурмагомедов', 'Царукян',
-  'Мирзоев', 'Аллахвердиев', 'Байрамов', 'Гусейнов', 'Зейналов', 'Кязымов', 'Махмудов', 'Оруджев'
+  'Ахмедов', 'Намазов', 'Мамедов', 'Алиев', 'Гасанов', 'Абдуллаев', 'Ибрагимов', 'Султанов', 'Умаров', 'Шарипов',
+  'Басак', 'Громов', 'Белозерский', 'Волконский', 'Оболенский', 'Трубецкой', 'Голицын'
 ];
 
 const INITIALS_LETTERS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ';
@@ -38,63 +23,74 @@ const generateRandomName = () => {
   const surname = SURNAMES[Math.floor(Math.random() * SURNAMES.length)];
   const i1 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
   const i2 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
-  
-  // Шанс на женскую фамилию — 10% (0.1)
   const isFemale = Math.random() < 0.1;
   let finalSurname = surname;
-  
-  // Склонение только для славянских типов фамилий
   if (isFemale && (surname.endsWith('ов') || surname.endsWith('ев') || surname.endsWith('ин'))) {
     finalSurname += 'а';
   } else if (isFemale && surname.endsWith('ий')) {
     finalSurname = surname.replace('ий', 'ая');
   }
-
   return `${finalSurname} ${i1}. ${i2}.`;
 };
 
-const TRANSFER_TYPES = [
-  { id: 'services', label: 'Оплата услуг', desc: 'ЖКХ, интернет, связь', icon: 'list', color: 'bg-orange-50 text-orange-600 border-orange-100' },
-  { id: 'exchange', label: 'Обмен валют', desc: 'Конвертация USDT/RUB', icon: 'swap', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+const STANDARD_TYPES = [
   { id: 'internal', label: 'Между своими', desc: 'С карты на карту Nova', icon: 'credit-card', color: 'bg-blue-50 text-blue-600 border-blue-100' },
   { id: 'card', label: 'По номеру карты', desc: 'На любую карту мира', icon: 'credit-card', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+  { id: 'services', label: 'Оплата услуг', desc: 'ЖКХ, интернет, связь', icon: 'list', color: 'bg-orange-50 text-orange-600 border-orange-100' },
   { id: 'account', label: 'По номеру счета', desc: 'Банковские реквизиты', icon: 'hash', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+];
+
+const USDT_TYPES = [
+  { id: 'send-usdt', label: 'Отправить USDT', desc: 'На внешний кошелек (TRC20)', icon: 'nova', color: 'bg-teal-50 text-teal-600 border-teal-100' },
+  { id: 'exchange-usdt', label: 'Обмен валют', desc: 'Обменять USDT на RUB/USD/EUR', icon: 'swap', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+  { id: 'withdraw-usdt', label: 'Вывести на карту', desc: 'Продать USDT и получить на карту', icon: 'credit-card', color: 'bg-blue-50 text-blue-600 border-blue-100' },
 ];
 
 const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
   const navigate = useNavigate();
   const [step, setStep] = useState<TransferStep>('select-card');
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-  const [selectedType, setSelectedType] = useState<typeof TRANSFER_TYPES[0] | null>(null);
+  const [selectedType, setSelectedType] = useState<any | null>(null);
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
-  
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifiedName, setVerifiedName] = useState('');
 
+  const currentTypes = selectedCard?.currency === 'USDT' ? USDT_TYPES : STANDARD_TYPES;
+
   const handleCardInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 16) value = value.slice(0, 16);
+    let value = e.target.value.replace(/\s/g, '');
+    const isCardType = selectedType?.id === 'card' || selectedType?.id === 'withdraw-usdt';
     
-    const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
-    setRecipient(formatted);
-    
-    if (value.length === 16 && selectedType?.id === 'card') {
-      setIsVerifying(true);
-      setVerifiedName('');
-      setTimeout(() => {
-        setIsVerifying(false);
-        setVerifiedName(generateRandomName());
-      }, 1200);
+    if (isCardType) {
+       value = value.replace(/\D/g, '');
+       if (value.length > 16) value = value.slice(0, 16);
+       const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+       setRecipient(formatted);
+       
+       if (value.length === 16) {
+         setIsVerifying(true);
+         setVerifiedName('');
+         setTimeout(() => {
+           setIsVerifying(false);
+           setVerifiedName(generateRandomName());
+         }, 1200);
+       } else {
+         setVerifiedName('');
+         setIsVerifying(false);
+       }
     } else {
-      setVerifiedName('');
-      setIsVerifying(false);
+       setRecipient(e.target.value);
     }
   };
 
   const handleSend = () => {
     const amt = parseFloat(amount);
     if (selectedCard && amt > 0) {
+      if (selectedType?.id === 'exchange-usdt') {
+        navigate('/exchange');
+        return;
+      }
       setStep('processing');
       setTimeout(() => {
         onSend(verifiedName || recipient || selectedType?.label || 'Перевод', amt, selectedCard.currency);
@@ -129,15 +125,15 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center justify-between shadow-sm active:scale-[0.98] transition-all group hover:border-blue-300 animate-fluid-up"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ background: card.color }}>
+                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0" style={{ background: card.color }}>
                         <Icons name="credit-card" className="w-6 h-6" />
                       </div>
                       <div className="text-left">
                         <p className="font-bold text-slate-800 text-[15px]">{card.type}</p>
-                        <p className="text-[10px] font-bold text-slate-300 tracking-wider italic">{card.number.match(/.{1,4}/g)?.join(' ')}</p>
+                        <p className="text-[10px] font-bold text-slate-300 tracking-wider italic">{card.number}</p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <p className="font-black text-slate-900 text-[16px]">{getCurrencySymbol(card.currency)} {card.balance.toLocaleString()}</p>
                     </div>
                   </button>
@@ -157,21 +153,23 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                 </button>
                 <span className="text-xs font-black text-slate-800 uppercase tracking-widest">Назад</span>
               </div>
-              <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5">ЧТО ПЕРЕВОДИМ?</h2>
+              <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5">
+                {selectedCard?.currency === 'USDT' ? 'USDT ДЕЙСТВИЯ' : 'ЧТО ПЕРЕВОДИМ?'}
+              </h2>
               <div className="space-y-3">
-                {TRANSFER_TYPES.map((type, idx) => (
+                {currentTypes.map((type, idx) => (
                   <button 
                     key={type.id}
                     style={{ animationDelay: `${idx * 0.05}s` }}
                     onClick={() => { setSelectedType(type); setStep('enter-details'); }}
                     className="w-full bg-white p-5 rounded-[30px] border border-slate-100 flex items-center gap-4 shadow-sm active:scale-[0.98] transition-all group hover:border-blue-200 animate-fluid-up"
                   >
-                    <div className={`w-12 h-12 rounded-[22px] ${type.color.split(' ')[0]} ${type.color.split(' ')[1]} border flex items-center justify-center transition-transform group-hover:scale-110`}>
+                    <div className={`w-12 h-12 rounded-[22px] ${type.color.split(' ')[0]} ${type.color.split(' ')[1]} border flex items-center justify-center transition-transform group-hover:scale-110 shrink-0`}>
                       <Icons name={type.icon} className="w-6 h-6" />
                     </div>
                     <div className="text-left flex-1">
                       <p className="font-bold text-slate-800 text-[15px]">{type.label}</p>
-                      <p className="text-[11px] font-bold text-slate-300 uppercase">{type.desc}</p>
+                      <p className="text-[11px] font-bold text-slate-300 uppercase leading-tight">{type.desc}</p>
                     </div>
                     <Icons name="arrow-up" className="w-4 h-4 rotate-90 text-slate-100 group-hover:text-blue-200 transition-colors" />
                   </button>
@@ -202,7 +200,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                 </div>
 
                 <div className="space-y-7">
-                  {selectedType?.id !== 'internal' && selectedType?.id !== 'exchange' && (
+                  {selectedType?.id !== 'internal' && selectedType?.id !== 'exchange-usdt' && (
                     <div className="space-y-3 relative">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">РЕКВИЗИТЫ</label>
                       <div className="relative">
@@ -210,7 +208,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                           type="text" 
                           value={recipient}
                           onChange={handleCardInput}
-                          placeholder={selectedType?.id === 'card' ? '0000 0000 0000 0000' : 'Номер договора или телефона'}
+                          placeholder={selectedType?.id === 'card' || selectedType?.id === 'withdraw-usdt' ? '0000 0000 0000 0000' : 'Адрес кошелька (TRC20)'}
                           className={`w-full bg-slate-50 border rounded-[28px] p-6 text-sm font-black focus:outline-none transition-all text-slate-800 placeholder:text-slate-200 ${isVerifying ? 'border-blue-200' : verifiedName ? 'border-emerald-200' : 'border-slate-100 focus:border-blue-400 focus:bg-white'}`}
                         />
                         {isVerifying && (
@@ -249,11 +247,11 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                 </div>
 
                 <button 
-                  disabled={!amount || parseFloat(amount) <= 0 || (selectedType?.id === 'card' && !verifiedName) || (selectedType?.id === 'account' && !recipient)}
+                  disabled={!amount || parseFloat(amount) <= 0 || ((selectedType?.id === 'card' || selectedType?.id === 'withdraw-usdt') && !verifiedName) || ((selectedType?.id === 'send-usdt' || selectedType?.id === 'account') && !recipient)}
                   onClick={handleSend}
                   className="w-full bg-blue-600 text-white disabled:bg-slate-50 disabled:text-slate-200 rounded-[28px] py-6 font-black text-lg active:scale-[0.97] transition-all shadow-xl shadow-blue-100 hover:bg-blue-700"
                 >
-                  Отправить
+                  {selectedType?.id === 'exchange-usdt' ? 'Перейти к обмену' : 'Отправить'}
                 </button>
               </div>
             </div>
@@ -276,13 +274,11 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
         return (
           <div className="fixed inset-0 z-[200] bg-white flex flex-col animate-fluid-up overflow-y-auto no-scrollbar pb-10">
             <div className="absolute top-0 left-0 right-0 h-[45vh] bg-gradient-to-b from-emerald-50 to-white -z-10"></div>
-            
             <div className="p-8 flex justify-end">
               <button onClick={() => navigate('/')} className="w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-slate-400 hover:text-slate-800 transition-all active:scale-90 border border-slate-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
-
             <div className="flex flex-col items-center space-y-8 pt-4 pb-12">
                <div className="relative">
                   <div className="absolute inset-0 bg-emerald-500 blur-2xl opacity-20 animate-pulse"></div>
@@ -290,7 +286,6 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17L4 12" /></svg>
                   </div>
                </div>
-               
                <div className="text-center space-y-4 px-10">
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-[0.2em] animate-fluid-fade">
                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -306,7 +301,6 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                   </div>
                </div>
             </div>
-
             <div className="px-6 space-y-2 animate-fluid-up" style={{ animationDelay: '0.3s' }}>
               <div className="bg-white p-2 rounded-[36px] border border-slate-100 shadow-sm space-y-1">
                 {[
@@ -327,12 +321,8 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                 ))}
               </div>
             </div>
-
             <div className="p-6 mt-6 animate-fluid-up" style={{ animationDelay: '0.4s' }}>
-               <button 
-                onClick={() => navigate('/')}
-                className="w-full bg-slate-900 text-white rounded-[28px] py-6 font-black text-lg shadow-2xl active:scale-[0.98] transition-all hover:bg-slate-800 shadow-slate-200"
-               >
+               <button onClick={() => navigate('/')} className="w-full bg-slate-900 text-white rounded-[28px] py-6 font-black text-lg shadow-2xl active:scale-[0.98] transition-all hover:bg-slate-800 shadow-slate-200">
                 На главную
                </button>
             </div>
@@ -346,7 +336,6 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
       <div className="flex flex-col space-y-1 mt-2 animate-fluid-down">
         <h1 className="text-3xl font-black tracking-tight text-slate-900">Платежи</h1>
       </div>
-
       {renderStep()}
     </div>
   );

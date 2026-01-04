@@ -173,9 +173,7 @@ const App: React.FC = () => {
 
   const resetWallet = useCallback(() => {
     if (window.confirm('Вы уверены, что хотите сбросить кошелек? Все балансы и история транзакций будут удалены.')) {
-      // Сначала очищаем localStorage
       localStorage.removeItem(STORAGE_KEY);
-      // Устанавливаем состояние в дефолтное
       setState(INITIAL_STATE);
     }
   }, []);

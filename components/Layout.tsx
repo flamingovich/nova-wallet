@@ -18,13 +18,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main 
         className="flex-1 px-5 pb-32 pt-2 max-w-2xl mx-auto w-full relative"
       >
-        {/* Анимации теперь управляются внутри страниц, чтобы не ломать контекст наложения модалок */}
         {children}
       </main>
 
       {/* Navigation */}
       <nav className="fixed bottom-6 left-5 right-5 z-[500] max-w-lg mx-auto">
-        <div className="liquid-glass rounded-[32px] px-8 h-18 flex items-center justify-between shadow-2xl border border-white/50 overflow-hidden relative">
+        <div className="liquid-glass rounded-[32px] px-6 h-18 flex items-center justify-between shadow-2xl border border-white/50 overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-t from-slate-50/20 to-transparent pointer-events-none"></div>
           
           <NavLink to="/" className={({ isActive }) => `flex flex-col items-center gap-1 transition-all duration-300 active:scale-90 relative group py-3 ${isActive ? 'text-blue-600 scale-105' : 'text-slate-400 hover:text-slate-600'}`}>

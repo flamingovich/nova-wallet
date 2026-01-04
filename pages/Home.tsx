@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AppState, Currency } from '../types';
 import Icons from '../components/Icons';
 
@@ -24,6 +24,17 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
   const [exchangeAmount, setExchangeAmount] = useState('');
 
   const [newName, setNewName] = useState(state.userName);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = window.innerWidth * 0.8;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleTopUp = () => {
     const amt = parseFloat(topUpAmount);
@@ -59,8 +70,19 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
   };
 
   const formatCardNumber = (num: string) => {
-    const clean = num.replace(/\s/g, '').replace(/[^\d•]/g, '');
-    return clean.match(/.{1,4}/g)?.join(' ') || num;
+    return num;
+  };
+
+  const getBrandLogo = (type: string) => {
+    if (type.includes('MIR')) return <div className="text-[14px] font-black italic tracking-tighter text-white">МИР</div>;
+    if (type.includes('Visa')) return <div className="text-[18px] font-black italic tracking-tighter text-white">VISA</div>;
+    if (type.includes('MasterCard')) return (
+      <div className="flex -space-x-2">
+        <div className="w-5 h-5 rounded-full bg-[#EB001B]/80"></div>
+        <div className="w-5 h-5 rounded-full bg-[#F79E1B]/80"></div>
+      </div>
+    );
+    return <Icons name="nova" className="w-6 h-6 text-white/80" />;
   };
 
   const usdtRate = rates[exchangeTo] || 1;
@@ -84,45 +106,95 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
       </div>
 
       {/* Счета и карты */}
-      <section className="space-y-4 animate-fluid-up" style={{ animationDelay: '0.05s' }}>
+      <section className="space-y-4 animate-fluid-up relative group" style={{ animationDelay: '0.05s' }}>
         <div className="flex justify-between items-end px-1">
           <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Мои счета</h2>
           <button className="text-[10px] font-black text-blue-500 active:opacity-60 transition-opacity">ВСЕ</button>
         </div>
         
-        <div className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 pb-2">
+        {/* Стрелки навигации */}
+        <div className="absolute top-1/2 -left-2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
+          <button onClick={() => scroll('left')} className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-xl flex items-center justify-center text-slate-800 active:scale-90 transition-transform">
+             <Icons name="arrow-up" className="w-5 h-5 -rotate-90" />
+          </button>
+        </div>
+        <div className="absolute top-1/2 -right-2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
+          <button onClick={() => scroll('right')} className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-xl flex items-center justify-center text-slate-800 active:scale-90 transition-transform">
+             <Icons name="arrow-up" className="w-5 h-5 rotate-90" />
+          </button>
+        </div>
+        
+        {/* Кнопки-стрелки для мобильных (всегда видны) */}
+        <div className="flex sm:hidden absolute right-0 -top-8 gap-2">
+           <button onClick={() => scroll('left')} className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 active:bg-blue-100 active:text-blue-500 transition-colors">
+              <Icons name="arrow-up" className="w-3 h-3 -rotate-90" />
+           </button>
+           <button onClick={() => scroll('right')} className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 active:bg-blue-100 active:text-blue-500 transition-colors">
+              <Icons name="arrow-up" className="w-3 h-3 rotate-90" />
+           </button>
+        </div>
+
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 pb-2 scroll-smooth"
+        >
           {state.cards.map((card) => (
             <div 
               key={card.id}
-              className="min-w-[85vw] sm:min-w-[320px] h-[190px] rounded-[36px] p-7 flex flex-col justify-between shadow-2xl relative snap-center border-0 text-white transition-all hover:scale-[1.01] active:scale-[0.98] duration-500 cursor-pointer overflow-hidden group will-change-gpu"
+              className="min-w-[85vw] sm:min-w-[340px] h-[210px] rounded-[28px] p-6 flex flex-col justify-between shadow-2xl relative snap-center border-0 text-white transition-all hover:scale-[1.02] active:scale-[0.98] duration-500 cursor-pointer overflow-hidden group will-change-gpu"
               style={{ background: card.color }}
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-white/5 to-white/20 opacity-50 transition-opacity group-hover:opacity-70"></div>
+              {/* Реалистичные текстуры и блики */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-white/5 to-white/10 opacity-60"></div>
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none group-hover:bg-white/20 transition-all duration-700"></div>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
               
               <div className="flex justify-between items-start z-10">
-                <span className="text-[9px] font-black tracking-[0.2em] opacity-80 uppercase italic">{card.type}</span>
-                <div className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center gap-2">
-                   {card.currency === 'USDT' && <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>}
-                   <div className="text-[10px] font-black text-white">{card.currency}</div>
+                <div className="space-y-4">
+                   <div className="flex items-center gap-3">
+                      <div className="w-10 h-8 rounded-md bg-gradient-to-br from-amber-300 via-amber-200 to-amber-400 shadow-inner relative overflow-hidden flex items-center justify-center border border-amber-500/30">
+                         <div className="absolute inset-0 flex flex-col justify-between p-1">
+                            <div className="h-[1px] w-full bg-black/10"></div>
+                            <div className="h-[1px] w-full bg-black/10"></div>
+                            <div className="h-[1px] w-full bg-black/10"></div>
+                         </div>
+                         <div className="w-4 h-5 border border-black/10 rounded-sm"></div>
+                      </div>
+                      <span className="text-[10px] font-bold tracking-[0.1em] text-white/90 drop-shadow-sm uppercase">Nova Premium</span>
+                   </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                   {getBrandLogo(card.type)}
+                   <span className="text-[8px] font-black text-white/40 uppercase tracking-tighter">{card.type.split(' ')[0]}</span>
                 </div>
               </div>
 
-              <div className="z-10">
-                <p className="label-caps !text-white/60 !text-[8px] mb-1 tracking-widest">БАЛАНС</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-black text-white/50">{getCurrencySymbol(card.currency)}</span>
-                  <span className="text-3xl font-black tracking-tighter drop-shadow-lg">
+              <div className="z-10 mt-2">
+                <p className="text-[9px] font-black text-white/50 mb-0.5 tracking-widest uppercase">Текущий баланс</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-sm font-black text-white/60">{getCurrencySymbol(card.currency)}</span>
+                  <span className="text-4xl font-black tracking-tighter drop-shadow-xl">
                     {card.balance.toLocaleString('ru-RU', { minimumFractionDigits: 0 })}
                   </span>
-                  <span className="text-lg font-medium opacity-40">
+                  <span className="text-xl font-medium opacity-40">
                     .{((card.balance % 1) * 100).toFixed(0).padStart(2, '0').slice(0, 2)}
                   </span>
                 </div>
               </div>
 
-              <div className="flex justify-between items-end z-10">
-                <span className="text-[12px] font-mono tracking-[0.2em] text-white/70">{formatCardNumber(card.number)}</span>
-                <span className="text-[9px] font-black text-white/40 tracking-wider uppercase">{card.expiry}</span>
+              <div className="flex justify-between items-end z-10 pt-4 border-t border-white/10">
+                <div className="space-y-1">
+                  <span className="text-[14px] font-mono tracking-[0.25em] text-white/90 drop-shadow-sm">{formatCardNumber(card.number)}</span>
+                  <div className="flex gap-4">
+                    <div className="flex flex-col">
+                       <span className="text-[6px] text-white/40 font-black uppercase">Valid Thru</span>
+                       <span className="text-[9px] font-bold text-white/70">{card.expiry}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
+                  <Icons name="qr" className="w-5 h-5 text-white/80" />
+                </div>
               </div>
             </div>
           ))}
