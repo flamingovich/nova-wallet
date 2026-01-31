@@ -11,7 +11,7 @@ interface TransfersProps {
 
 type TransferStep = 'select-card' | 'select-type' | 'enter-details' | 'processing' | 'success';
 
-// ОГРОМНАЯ БАЗА ТОЛЬКО МУЖСКИХ СЛАВЯНСКИХ ФАМИЛИЙ
+// ОГРОМНЫЙ СПИСОК МУЖСКИХ СЛАВЯНСКИХ ФАМИЛИЙ
 const SURNAMES = [
   'Иванов', 'Смирнов', 'Кузнецов', 'Попов', 'Васильев', 'Петров', 'Соколов', 'Михайлов', 'Новиков', 'Федоров',
   'Морозов', 'Волков', 'Алексеев', 'Лебедев', 'Семенов', 'Егоров', 'Павлов', 'Козлов', 'Степанов', 'Николаев',
@@ -21,46 +21,46 @@ const SURNAMES = [
   'Анисимов', 'Ефимов', 'Тихонов', 'Медведев', 'Антонов', 'Тарасов', 'Белов', 'Комаров', 'Осипов', 'Матвеев',
   'Виноградов', 'Мартынов', 'Еремин', 'Герасимов', 'Бирюков', 'Филиппов', 'Абрамов', 'Дроздов', 'Шарапов', 'Ахмедов',
   'Громов', 'Белозерский', 'Волконский', 'Оболенский', 'Трубецкой', 'Голицын', 'Шереметьев', 'Юсупов', 'Меншиков',
-  'Строганов', 'Воронцов', 'Лопухин', 'Романов', 'Разумовский', 'Толстой', 'Достоевский', 'Чехов', 'Пушкин',
-  'Лермонтов', 'Ахматов', 'Цветаев', 'Бродский', 'Пастернак', 'Булгаков', 'Пелевин', 'Сорокин', 'Хабибуллин', 
-  'Сафин', 'Дасаев', 'Яшин', 'Черенков', 'Аршавин', 'Кержаков', 'Дзюба', 'Головин', 'Миранчук', 'Смолов', 
-  'Акинфеев', 'Игнашевич', 'Березуцкий', 'Жирков', 'Павлюченко', 'Погребняк', 'Абрамович', 'Авдеев', 'Агапов', 
-  'Азаров', 'Аксёнов', 'Акулов', 'Алёхин', 'Алмазов', 'Алфёров', 'Амелин', 'Амиров', 'Ананьев', 'Андрианов',
-  'Андропов', 'Аничков', 'Анненков', 'Антипов', 'Антропов', 'Ануфриев', 'Апарин', 'Апраксин', 'Аракчеев', 'Арбузов', 
-  'Арефьев', 'Аристархов', 'Аристов', 'Арсеньев', 'Артёмов', 'Артемьев', 'Архипов', 'Аршинников', 'Астафьев', 
-  'Астахов', 'Афанасьев', 'Афонин', 'Ахматов', 'Ахметов', 'Бабиков', 'Бабичев', 'Бабкин', 'Бабушкин', 'Багров', 
-  'Бажанов', 'Базаров', 'Базин', 'Бакланов', 'Бакунин', 'Балакирев', 'Балашов', 'Балдин', 'Балкашин', 'Барановский', 
-  'Баратов', 'Барков', 'Бармин', 'Барсуков', 'Барышников', 'Басов', 'Баталов', 'Батищев', 'Батурин', 'Батюшков', 
-  'Бахметьев', 'Бахрушин', 'Башарин', 'Безбородов', 'Безруков', 'Безухов', 'Бекетов', 'Белинский', 'Белоглазов', 
-  'Белозёрцев', 'Белоконь', 'Белокуров', 'Беломестных', 'Белоногов', 'Белосельский', 'Белоусов', 'Беляев', 'Беляков', 
-  'Бердяев', 'Береговой', 'Бережной', 'Березин', 'Берёзов', 'Березовский', 'Бесчастных', 'Бестужев', 'Бехтерев', 
-  'Бирюков', 'Благов', 'Блинов', 'Блохин', 'Бобров', 'Бобылёв', 'Богатов', 'Богатырёв', 'Богданов', 'Боголюбов', 
-  'Богомолов', 'Бодров', 'Бойцов', 'Бокарев', 'Болдин', 'Болотников', 'Болтунов', 'Бондарев', 'Борзенков', 'Боровков', 
-  'Бородин', 'Борцов', 'Бочаров', 'Бояринцев', 'Брагин', 'Братцев', 'Бредихин', 'Брежнев', 'Бриллиантов', 'Брюллов', 
-  'Брюсов', 'Брызгалов', 'Буданов', 'Будённый', 'Бузин', 'Буков', 'Булавин', 'Буланов', 'Булатников', 'Булатов', 
-  'Булыгин', 'Бунин', 'Бурков', 'Бурмакин', 'Буров', 'Бурцев', 'Бутусов', 'Бутурлин', 'Бухарин', 'Бушуев', 'Быков', 
-  'Быковский', 'Бычков', 'Вавилов', 'Вагин', 'Вайцеховский', 'Вакулов', 'Вакутин', 'Валуев', 'Варенников', 
-  'Варламов', 'Варфоломеев', 'Василевский', 'Васнецов', 'Ватутин', 'Вахрушев', 'Вахтин', 'Введенский', 'Веденеев', 
-  'Веденин', 'Верещагин', 'Веселов', 'Ветров', 'Винокуров', 'Вислоухов', 'Витте', 'Вицин', 'Вишняков', 'Владимиров', 
-  'Власов', 'Водников', 'Водянов', 'Вознесенский', 'Войков', 'Володин', 'Волочков', 'Волошин', 'Вольнов', 'Воробьёв', 
-  'Воронин', 'Воронов', 'Воротынский', 'Ворошилов', 'Воскресенский', 'Востросаблин', 'Востряков', 'Вырыпаев', 
-  'Вяземский', 'Гагарин', 'Гаврилов', 'Гаганов', 'Гайдар', 'Галактионов', 'Галицкий', 'Галкин', 'Гальцев', 'Ганичев', 
-  'Ганнушкин', 'Гарин', 'Гарифуллин', 'Гаркалин', 'Гафт', 'Гвоздёв', 'Гедеонов', 'Герман', 'Герцен', 'Гиляровский', 
-  'Гладков', 'Глазунов', 'Глебов', 'Глинка', 'Глухарёв', 'Глушков', 'Гнедич', 'Говоров', 'Гоголь', 'Годунов', 
-  'Голенищев', 'Голованов', 'Головкин', 'Голосов', 'Голубев', 'Голубинский', 'Голубов', 'Голунов', 'Гольцев', 
-  'Голышев', 'Гончаров', 'Горбачёв', 'Горбунов', 'Гордеев', 'Горелов', 'Горин', 'Горлов', 'Горский', 'Горюнов', 
-  'Горячев', 'Гостищев', 'Готовцев', 'Градов', 'Грамматиков', 'Гранин', 'Грачёв', 'Гребенщиков', 'Греков', 'Гречко', 
-  'Грибоедов', 'Гришин', 'Громыко', 'Груздев', 'Грушевой', 'Грязнов', 'Губанов', 'Губерман', 'Гудков', 'Гуляев', 
-  'Гурвич', 'Гурченко', 'Гурьев', 'Гусаков', 'Гусаров', 'Гущин', 'Давыдов', 'Данилин', 'Дашков', 'Дворников', 
-  'Дегтярёв', 'Дементьев', 'Демидов', 'Демьянов', 'Денисов', 'Державин', 'Десницкий', 'Дёмин', 'Дибич', 'Дивногорцев', 
-  'Диков', 'Дикуль', 'Добрынин', 'Довлатов', 'Докучаев', 'Долгоруков', 'Долин', 'Дольский', 'Домогаров', 'Доронин', 
-  'Дорофеев', 'Дорохов', 'Драгомиров', 'Драгунов', 'Дружинин', 'Друнин', 'Дубинин', 'Дубов', 'Дубровин', 'Дудин', 
-  'Дунаевский', 'Дуров', 'Дурново', 'Дыховичный', 'Дьяков', 'Дьяконов', 'Дьяченко', 'Дюжев', 'Евдокимов', 'Евстигнеев', 
-  'Евтушенко', 'Ежов', 'Елагин', 'Елизаров', 'Елисеев', 'Ельцин', 'Емельянов', 'Енин', 'Епанчин', 'Епифанцев', 
-  'Еремеев', 'Ерёмин', 'Ермолов', 'Ерофеев', 'Ершов', 'Есенин', 'Ефремов', 'Жаров', 'Жданов', 'Жеглов', 'Жемчужников', 
-  'Жигунов', 'Жидков', 'Жиров', 'Забелин', 'Заболотный', 'Забусов', 'Завьялов', 'Загоскин', 'Задорнов', 'Залесский', 
-  'Залыгин', 'Замятин', 'Запашный', 'Зарубин', 'Заславский', 'Засулич', 'Звягинцев', 'Зеленин', 'Зеленский', 'Зелинский', 
-  'Зимин', 'Зиновьев', 'Златоустов', 'Зотов', 'Зощенко', 'Зубов', 'Зудин', 'Зуев', 'Зыков', 'Зырянов', 'Зюганов'
+  'Строганов', 'Воронцов', 'Лопухин', 'Романов', 'Рюрикович', 'Кантемир', 'Разумовский', 'Толстой', 'Достоевский',
+  'Чехов', 'Пушкин', 'Лермонтов', 'Ахматов', 'Цветаев', 'Бродский', 'Пастернак', 'Булгаков', 'Пелевин', 'Сорокин',
+  'Хабибуллин', 'Сафин', 'Дасаев', 'Яшин', 'Черенков', 'Аршавин', 'Кержаков', 'Дзюба', 'Головин', 'Миранчук', 'Смолов',
+  'Акинфеев', 'Игнашевич', 'Березуцкий', 'Жирков', 'Павлюченко', 'Погребняк', 'Абрамович', 'Авдеев', 'Агапов', 'Азаров',
+  'Аксёнов', 'Акулов', 'Александров', 'Алёхин', 'Алмазов', 'Алфёров', 'Амелин', 'Амиров', 'Ананьев', 'Андрианов',
+  'Андропов', 'Аничков', 'Анненков', 'Антипов', 'Антропов', 'Ануфриев', 'Апарин', 'Апраксин', 'Аракчеев', 'Арбузов',
+  'Арефьев', 'Аристархов', 'Аристов', 'Арсеньев', 'Артёмов', 'Артемьев', 'Архипов', 'Аршинников', 'Астафьев', 'Астахов',
+  'Афанасьев', 'Афонин', 'Ахметов', 'Бабиков', 'Бабичев', 'Бабкин', 'Бабушкин', 'Багров', 'Бажанов', 'Базаров', 'Базин',
+  'Бакланов', 'Бакунин', 'Балакирев', 'Балашов', 'Балдин', 'Балкашин', 'Барановский', 'Баратов', 'Барков', 'Бармин',
+  'Барсуков', 'Барышников', 'Басов', 'Баталов', 'Батищев', 'Батурин', 'Батюшков', 'Бахметьев', 'Бахрушин', 'Башарин',
+  'Безбородов', 'Безруков', 'Безухов', 'Бекетов', 'Белинский', 'Белоглазов', 'Белозёрцев', 'Белоконь', 'Белокуров',
+  'Беломестных', 'Белоногов', 'Белосельский', 'Белоусов', 'Беляев', 'Беляков', 'Бердяев', 'Береговой', 'Бережной',
+  'Березин', 'Берёзов', 'Березовский', 'Бесчастных', 'Бестужев', 'Бехтерев', 'Благов', 'Блинов', 'Блохин', 'Бобров',
+  'Бобылёв', 'Богатов', 'Богатырёв', 'Богданов', 'Боголюбов', 'Богомолов', 'Бодров', 'Бойко', 'Бойцов', 'Бокарев',
+  'Болдин', 'Болотников', 'Болтунов', 'Бондарев', 'Бондаренко', 'Борзенков', 'Боровков', 'Бородин', 'Борцов', 'Бочаров',
+  'Бояринцев', 'Брагин', 'Братцев', 'Бредихин', 'Брежнев', 'Бриллиантов', 'Брюллов', 'Брюсов', 'Брызгалов', 'Буданов',
+  'Будённый', 'Бузин', 'Буков', 'Булавин', 'Буланов', 'Булатников', 'Булатов', 'Булыгин', 'Бунин', 'Бурков', 'Бурмакин',
+  'Буров', 'Бурцев', 'Бутусов', 'Бутурлин', 'Бухарин', 'Бушуев', 'Быков', 'Быковский', 'Бычков', 'Вавилов', 'Вагин',
+  'Вайцеховский', 'Вакулов', 'Вакутин', 'Валуев', 'Варенников', 'Варламов', 'Варфоломеев', 'Василевский', 'Васильев',
+  'Васнецов', 'Ватутин', 'Вахрушев', 'Вахтин', 'Введенский', 'Веденеев', 'Веденин', 'Верещагин', 'Веселов', 'Ветров',
+  'Виноградов', 'Винокуров', 'Вислоухов', 'Витте', 'Вицин', 'Вишняков', 'Владимиров', 'Власов', 'Водников', 'Водянов',
+  'Вознесенский', 'Войков', 'Володин', 'Волочков', 'Волошин', 'Вольнов', 'Воробьёв', 'Воронин', 'Воронов', 'Воротынский',
+  'Ворошилов', 'Воскресенский', 'Востросаблин', 'Востряков', 'Вырыпаев', 'Вяземский', 'Гагарин', 'Гаврилов', 'Гаганов',
+  'Гайдар', 'Галактионов', 'Галицкий', 'Галкин', 'Гальцев', 'Ганичев', 'Ганнушкин', 'Гарин', 'Гарифуллин', 'Гаркалин',
+  'Гафт', 'Гвоздёв', 'Гедеонов', 'Герасимов', 'Герман', 'Герцен', 'Гиляровский', 'Гладков', 'Глазунов', 'Глебов', 'Глинка',
+  'Глухарёв', 'Глушков', 'Гнедич', 'Говоров', 'Гоголь', 'Годунов', 'Голенищев', 'Голицын', 'Голованов', 'Головин',
+  'Головкин', 'Голосов', 'Голубев', 'Голубинский', 'Голубов', 'Голунов', 'Гольцев', 'Голышев', 'Гончаров', 'Горбачёв',
+  'Горбунов', 'Гордеев', 'Гордон', 'Горелов', 'Горин', 'Горлов', 'Горский', 'Горький', 'Горюнов', 'Горячев', 'Гостищев',
+  'Готовцев', 'Градов', 'Грамматиков', 'Гранин', 'Грачёв', 'Гребенщиков', 'Греков', 'Гречко', 'Грибоедов', 'Гришин',
+  'Громов', 'Громыко', 'Груздев', 'Грушевой', 'Грязнов', 'Губанов', 'Губерман', 'Гудков', 'Гуляев', 'Гурвич', 'Гурченко',
+  'Гурьев', 'Гусаков', 'Гусаров', 'Гусев', 'Гущин', 'Давыдов', 'Данилин', 'Дашков', 'Дворников', 'Дегтярёв', 'Дементьев',
+  'Демидов', 'Демьянов', 'Денисов', 'Державин', 'Десницкий', 'Дёмин', 'Дибич', 'Дивногорцев', 'Диков', 'Дикуль', 'Дмитриев',
+  'Добрынин', 'Довлатов', 'Докучаев', 'Долгоруков', 'Долин', 'Дольский', 'Домогаров', 'Доронин', 'Дорофеев', 'Дорохов',
+  'Достоевский', 'Драгомиров', 'Драгунов', 'Дружинин', 'Друнин', 'Дубинин', 'Дубов', 'Дубровин', 'Дудин', 'Дунаевский',
+  'Дуров', 'Дурново', 'Дыховичный', 'Дьяков', 'Дьяконов', 'Дьяченко', 'Дюжев', 'Евдокимов', 'Евстигнеев', 'Евтушенко',
+  'Егоров', 'Ежов', 'Елагин', 'Елизаров', 'Елисеев', 'Ельцин', 'Емельянов', 'Енин', 'Епанчин', 'Епифанцев', 'Еремеев',
+  'Ерёмин', 'Ермолов', 'Ерофеев', 'Ершов', 'Есенин', 'Ефремов', 'Жаров', 'Жданов', 'Жеглов', 'Жемчужников', 'Жигунов',
+  'Жидков', 'Жиров', 'Забелин', 'Заболотный', 'Забусов', 'Завьялов', 'Загоскин', 'Задорнов', 'Залесский', 'Залыгин',
+  'Замятин', 'Запашный', 'Зарубин', 'Заславский', 'Засулич', 'Звягинцев', 'Зеленин', 'Зеленский', 'Зелинский', 'Зимин',
+  'Зиновьев', 'Златоустов', 'Зотов', 'Зощенко', 'Зубов', 'Зудин', 'Зуев', 'Зыков', 'Зырянов', 'Зюганов'
 ];
 
 const INITIALS_LETTERS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ';
@@ -69,34 +69,16 @@ const generateRandomName = () => {
   const surname = SURNAMES[Math.floor(Math.random() * SURNAMES.length)];
   const i1 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
   const i2 = INITIALS_LETTERS[Math.floor(Math.random() * INITIALS_LETTERS.length)];
-  // Only male names as requested
   return `${surname} ${i1}. ${i2}.`;
 };
 
 const getCardBrand = (number: string) => {
   const clean = number.replace(/\s/g, '');
-  if (!clean) return null;
   if (clean.startsWith('4')) return 'Visa';
-  if (clean.startsWith('2')) {
-      if (clean.startsWith('220')) return 'МИР';
-      if (/^2(22[1-9]|2[3-9][0-9]|[3-6][0-9]{2}|7[0-1][0-9]|720)/.test(clean)) return 'MasterCard';
-      return null;
-  }
+  if (clean.startsWith('220')) return 'МИР';
   if (/^5[1-5]/.test(clean)) return 'MasterCard';
-  if (clean.startsWith('6')) return 'Maestro';
   return null;
 };
-
-const STANDARD_TYPES = [
-  { id: 'internal', label: 'Свои счета', desc: 'Внутри Nova', icon: 'credit-card', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-  { id: 'card', label: 'На карту', desc: 'В любой банк', icon: 'credit-card', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-  { id: 'services', label: 'Услуги', desc: 'ЖКХ, связь', icon: 'list', color: 'bg-orange-50 text-orange-600 border-orange-100' },
-];
-
-const USDT_TYPES = [
-  { id: 'send-usdt', label: 'USDT (TRC20)', desc: 'Внешний адрес', icon: 'nova', color: 'bg-teal-50 text-teal-600 border-teal-100' },
-  { id: 'exchange-usdt', label: 'Обмен', desc: 'RUB/USD/EUR', icon: 'swap', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-];
 
 const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
   const navigate = useNavigate();
@@ -109,54 +91,19 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
   const [verifiedName, setVerifiedName] = useState('');
   const [detectedBrand, setDetectedBrand] = useState<string | null>(null);
 
-  const currentTypes = selectedCard?.currency === 'USDT' ? USDT_TYPES : STANDARD_TYPES;
-
-  const handleCardInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\s/g, '');
-    const isCardType = selectedType?.id === 'card';
-    
-    if (isCardType) {
-       value = value.replace(/\D/g, '');
-       if (value.length > 16) value = value.slice(0, 16);
-       setDetectedBrand(getCardBrand(value));
-       const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
-       setRecipient(formatted);
-       
-       if (value.length === 16) {
-         setIsVerifying(true);
-         setVerifiedName('');
-         setTimeout(() => {
-           setIsVerifying(false);
-           setVerifiedName(generateRandomName());
-         }, 800);
-       } else {
-         setVerifiedName('');
-         setIsVerifying(false);
-       }
-    } else {
-       setRecipient(e.target.value);
-    }
-  };
-
-  const FEE_PERCENT = 0.05; // 5%
+  const FEE_PERCENT = 0.05; // 5% как просили
   const getFee = (amt: number) => amt * FEE_PERCENT;
 
   const handleSend = () => {
     const amt = parseFloat(amount);
     if (selectedCard && amt > 0) {
-      if (selectedType?.id === 'exchange-usdt') {
-        navigate('/exchange');
-        return;
-      }
-      
       const fee = getFee(amt);
       const totalDebit = amt + fee;
-
       setStep('processing');
       setTimeout(() => {
         onSend(verifiedName || recipient || selectedType?.label || 'Перевод', amt, selectedCard.currency, totalDebit, fee);
         setStep('success');
-      }, 2500);
+      }, 2000);
     }
   };
 
@@ -174,26 +121,26 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
     switch (step) {
       case 'select-card':
         return (
-          <div className="space-y-4 animate-fluid-fade">
-            <h2 className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Выберите счет</h2>
+          <div className="space-y-3 animate-fluid-fade">
+            <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest px-1">Откуда переводим</h2>
             <div className="space-y-2">
               {cards.map((card) => (
                 <button 
                   key={card.id}
                   onClick={() => { setSelectedCard(card); setStep('select-type'); }}
-                  className="w-full bg-white p-4 rounded-[24px] border border-slate-100 flex items-center justify-between shadow-sm active:scale-[0.98] transition-all animate-fluid-up"
+                  className="w-full bg-white p-4 rounded-[24px] border border-slate-100 flex items-center justify-between tile-shadow active:scale-[0.98] transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-md shrink-0" style={{ background: card.color }}>
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100">
                       <Icons name="credit-card" className="w-5 h-5" />
                     </div>
                     <div className="text-left">
-                      <p className="font-bold text-slate-800 text-sm leading-tight">{card.type}</p>
-                      <p className="text-[9px] font-bold text-slate-300 tracking-wider">{card.number}</p>
+                      <p className="font-black text-slate-800 text-sm leading-tight">{card.type}</p>
+                      <p className="text-[10px] font-bold text-slate-300 tracking-wider italic">•••• {card.number.slice(-4)}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-black text-slate-900 text-[14px]">{getCurrencySymbol(card.currency)} {card.balance.toLocaleString()}</p>
+                    <p className="font-black text-slate-900 text-[14px]">{card.balance.toLocaleString()} {getCurrencySymbol(card.currency)}</p>
                   </div>
                 </button>
               ))}
@@ -203,25 +150,27 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
 
       case 'select-type':
         return (
-          <div className="space-y-4 animate-fluid-fade">
-            <button onClick={() => setStep('select-card')} className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest px-1">
+          <div className="space-y-3 animate-fluid-fade">
+             <button onClick={() => setStep('select-card')} className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase px-1">
                <Icons name="arrow-up" className="w-3 h-3 -rotate-90" /> Назад
             </button>
+            <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest px-1">Выберите способ</h2>
             <div className="space-y-2">
-              {currentTypes.map((type) => (
+              {[
+                { id: 'card', label: 'По номеру карты', icon: 'credit-card', color: 'text-blue-500 bg-blue-50' },
+                { id: 'phone', label: 'По номеру телефона', icon: 'user', color: 'text-emerald-500 bg-emerald-50' },
+                { id: 'internal', label: 'Между счетами', icon: 'swap', color: 'text-indigo-500 bg-indigo-50' }
+              ].map((type) => (
                 <button 
                   key={type.id}
                   onClick={() => { setSelectedType(type); setStep('enter-details'); }}
-                  className="w-full bg-white p-4 rounded-[24px] border border-slate-100 flex items-center gap-3 shadow-sm active:scale-[0.98] transition-all animate-fluid-up"
+                  className="w-full bg-white p-4 rounded-[24px] border border-slate-100 flex items-center gap-3 tile-shadow active:scale-[0.98] transition-all"
                 >
-                  <div className={`w-10 h-10 rounded-xl ${type.color.split(' ')[0]} ${type.color.split(' ')[1]} border flex items-center justify-center shrink-0`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${type.color}`}>
                     <Icons name={type.icon} className="w-5 h-5" />
                   </div>
-                  <div className="text-left flex-1">
-                    <p className="font-bold text-slate-800 text-sm leading-tight">{type.label}</p>
-                    <p className="text-[9px] font-bold text-slate-300 uppercase leading-tight">{type.desc}</p>
-                  </div>
-                  <Icons name="arrow-up" className="w-3 h-3 rotate-90 text-slate-200" />
+                  <span className="font-black text-slate-800 text-sm">{type.label}</span>
+                  <Icons name="arrow-up" className="w-3 h-3 rotate-90 text-slate-200 ml-auto" />
                 </button>
               ))}
             </div>
@@ -229,142 +178,150 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
         );
 
       case 'enter-details':
-        const currentAmount = parseFloat(amount) || 0;
-        const currentFee = getFee(currentAmount);
-        const totalAmount = currentAmount + currentFee;
+        const curAmt = parseFloat(amount) || 0;
+        const total = curAmt * 1.05;
+        const feeAmt = curAmt * 0.05;
 
         return (
           <div className="space-y-4 animate-fluid-fade">
-            <button onClick={() => setStep('select-type')} className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest px-1">
+             <button onClick={() => setStep('select-type')} className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase px-1">
                <Icons name="arrow-up" className="w-3 h-3 -rotate-90" /> Назад
             </button>
-            
-            <div className="bg-white p-6 rounded-[36px] border border-slate-50 shadow-xl space-y-6 animate-fluid-scale">
-              <div className="text-center space-y-1">
-                 <h3 className="text-xl font-black text-slate-800">{selectedType?.label}</h3>
-                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">С {selectedCard?.currency} счета</p>
-              </div>
+            <div className="bg-white p-6 rounded-[32px] tile-shadow border border-slate-50 space-y-6">
+               <div className="text-center">
+                  <h3 className="text-lg font-black text-slate-800">{selectedType?.label}</h3>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 italic">Карта •••• {selectedCard?.number.slice(-4)}</p>
+               </div>
 
-              <div className="space-y-5">
-                {selectedType?.id !== 'internal' && selectedType?.id !== 'exchange-usdt' && (
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Реквизиты</label>
-                    <div className="relative">
+               <div className="space-y-4">
+                  {selectedType?.id === 'card' && (
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-300 uppercase px-2">Номер карты</label>
                       <input 
                         type="text" 
-                        value={recipient}
-                        onChange={handleCardInput}
-                        placeholder={selectedType?.id === 'card' ? '0000 0000 0000 0000' : 'Адрес кошелька'}
-                        className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 text-sm font-black focus:outline-none transition-all text-slate-800 placeholder:text-slate-200"
+                        value={recipient} 
+                        onChange={(e) => {
+                           let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                           setRecipient(v.match(/.{1,4}/g)?.join(' ') || v);
+                           setDetectedBrand(getCardBrand(v));
+                           if (v.length === 16) { 
+                             setIsVerifying(true); 
+                             setTimeout(() => { 
+                               setIsVerifying(false); 
+                               setVerifiedName(generateRandomName()); 
+                             }, 800); 
+                           } else setVerifiedName('');
+                        }}
+                        placeholder="0000 0000 0000 0000"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-center font-black text-lg focus:outline-none" 
                       />
-                      {detectedBrand && (
-                         <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-white border border-slate-100 rounded text-[8px] font-black text-blue-600 uppercase">
-                            {detectedBrand}
-                         </div>
-                      )}
+                      {detectedBrand && <p className="text-[9px] font-black text-blue-600 text-center uppercase tracking-widest mt-1">{detectedBrand}</p>}
+                      {verifiedName && <p className="text-[10px] font-black text-emerald-500 text-center uppercase tracking-widest mt-2">{verifiedName}</p>}
                     </div>
-                    {verifiedName && (
-                      <div className="px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-2 animate-fluid-scale">
-                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                         <p className="text-[9px] font-black text-emerald-700 uppercase">{verifiedName}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+                  )}
 
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Сумма перевода</label>
-                  <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-[24px] px-6 focus-within:border-blue-300 focus-within:bg-white transition-all">
-                    <input 
-                      autoFocus
-                      type="number" 
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder="0.00"
-                      className="w-full bg-transparent py-4 text-3xl font-black text-center focus:outline-none text-slate-900 placeholder:text-slate-200"
-                    />
-                    <span className="text-xl font-black text-slate-300 ml-2">{getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black text-slate-300 uppercase px-2">Сумма</label>
+                    <div className="relative">
+                       <input 
+                        type="number" 
+                        value={amount} 
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="0.00"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center font-black text-3xl focus:outline-none" 
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 font-black">{getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
+                    </div>
                   </div>
 
-                  {currentAmount > 0 && (
-                    <div className="p-3 bg-slate-50 rounded-[20px] border border-slate-100 space-y-1 animate-fluid-up">
-                       <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase">
+                  {curAmt > 0 && (
+                    <div className="bg-blue-50 p-3 rounded-2xl border border-blue-100 space-y-1 animate-fluid-up">
+                       <div className="flex justify-between text-[9px] font-bold text-blue-400 uppercase">
                           <span>Комиссия (5%):</span>
-                          <span className="text-slate-600">+{currentFee.toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
+                          <span>+{feeAmt.toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
                        </div>
-                       <div className="flex justify-between items-center text-[11px] font-black text-slate-800 uppercase pt-1 border-t border-white">
-                          <span>Итого списание:</span>
-                          <span className="text-blue-600">{totalAmount.toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
+                       <div className="flex justify-between text-[11px] font-black text-blue-600 uppercase pt-1 border-t border-blue-100/50">
+                          <span>Всего к списанию:</span>
+                          <span>{total.toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
                        </div>
                     </div>
                   )}
-                </div>
-              </div>
+               </div>
 
-              <button 
-                disabled={!amount || parseFloat(amount) <= 0 || totalAmount > (selectedCard?.balance || 0)}
-                onClick={handleSend}
-                className="w-full bg-blue-600 text-white disabled:bg-slate-100 disabled:text-slate-300 rounded-[22px] py-4 font-black text-sm active:scale-[0.97] transition-all shadow-lg hover:bg-blue-700"
-              >
-                Отправить
-              </button>
+               <button 
+                 disabled={!amount || parseFloat(amount) <= 0 || total > (selectedCard?.balance || 0)}
+                 onClick={handleSend}
+                 className="w-full bg-red-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-[0.98] transition-all disabled:opacity-30"
+               >
+                 Перевести
+               </button>
             </div>
           </div>
         );
 
       case 'processing':
         return (
-          <div className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center">
-             <div className="w-16 h-16 border-4 border-slate-100 border-t-blue-500 rounded-full animate-spin"></div>
-             <p className="mt-6 text-[9px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Обработка...</p>
+          <div className="fixed inset-0 z-[1000] bg-white flex flex-col items-center justify-center">
+             <div className="w-12 h-12 border-4 border-slate-100 border-t-red-500 rounded-full animate-spin"></div>
+             <p className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Выполняем...</p>
           </div>
         );
 
       case 'success':
         const finalAmt = parseFloat(amount);
         const finalFee = getFee(finalAmt);
+        const symbol = getCurrencySymbol(selectedCard?.currency || 'RUB');
         return (
-          <div className="fixed inset-0 z-[200] bg-white flex flex-col animate-fluid-up overflow-y-auto pb-10">
-            <div className="p-6 flex justify-end">
-              <button onClick={() => navigate('/')} className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 active:scale-90">
-                <Icons name="qr" className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex flex-col items-center space-y-6 pt-2 pb-10">
-               <div className="w-20 h-20 rounded-[30px] bg-emerald-500 flex items-center justify-center text-white shadow-xl animate-fluid-scale">
-                 <Icons name="plus" className="w-10 h-10 rotate-45" />
-               </div>
-               <div className="text-center px-8">
-                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Успешно отправлено</p>
-                  <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                    {finalAmt.toLocaleString('ru-RU')} <span className="text-2xl opacity-20">{getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
-                  </div>
-                  <p className="mt-4 text-slate-800 font-black text-lg">{verifiedName || recipient}</p>
-               </div>
-            </div>
-            <div className="px-6 space-y-3">
-              <div className="bg-slate-50 p-4 rounded-[28px] border border-slate-100 space-y-3">
-                  <div className="flex justify-between items-center text-[10px] font-bold">
-                    <span className="text-slate-300 uppercase">Комиссия банка (5%)</span>
-                    <span className="text-slate-800">{finalFee.toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-[11px] font-black pt-2 border-t border-white">
-                    <span className="text-slate-400 uppercase">Всего списано</span>
-                    <span className="text-slate-900">{(finalAmt + finalFee).toFixed(2)} {getCurrencySymbol(selectedCard?.currency || 'RUB')}</span>
-                  </div>
-              </div>
-              <button onClick={() => navigate('/')} className="w-full bg-slate-900 text-white rounded-[22px] py-4 font-black text-sm active:scale-[0.98]">
-                На главную
-              </button>
-            </div>
+          <div className="fixed inset-0 z-[2000] bg-white flex flex-col animate-fluid-up">
+             {/* Beautiful Success Gradient Header */}
+             <div className="h-[40vh] bg-gradient-to-b from-emerald-500 via-teal-500 to-white flex flex-col items-center justify-center text-white relative px-6">
+                <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-2xl border border-white/30 animate-fluid-scale">
+                   <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-emerald-500">
+                      <Icons name="swap" className="w-8 h-8" />
+                   </div>
+                </div>
+                <h2 className="text-2xl font-black mt-6 tracking-tight">Перевод выполнен</h2>
+                <div className="mt-2 flex items-center gap-1 opacity-80">
+                   <Icons name="nova" className="w-4 h-4" />
+                   <span className="text-[10px] font-bold uppercase tracking-[0.2em]">NovaBank Success</span>
+                </div>
+             </div>
+
+             <div className="flex-1 bg-white px-8 pt-8 space-y-6 flex flex-col items-center">
+                <div className="text-center space-y-1">
+                   <p className="text-4xl font-black text-slate-900 tracking-tighter">{finalAmt.toLocaleString()} {symbol}</p>
+                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{verifiedName || recipient}</p>
+                </div>
+
+                <div className="w-full bg-slate-50 rounded-[28px] p-5 border border-slate-100 space-y-3">
+                   <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Комиссия (5%)</span>
+                      <span className="text-[12px] font-black text-slate-800">+{finalFee.toFixed(2)} {symbol}</span>
+                   </div>
+                   <div className="h-px bg-slate-200/50"></div>
+                   <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Всего списано</span>
+                      <span className="text-[14px] font-black text-emerald-600">{(finalAmt + finalFee).toFixed(2)} {symbol}</span>
+                   </div>
+                </div>
+
+                <div className="w-full space-y-3 mt-auto mb-8">
+                   <button className="w-full bg-blue-50 text-blue-600 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 active:scale-95 transition-all">
+                      <Icons name="list" className="w-5 h-5" />
+                      Посмотреть чек
+                   </button>
+                   <button onClick={() => navigate('/')} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">
+                      На главную
+                   </button>
+                </div>
+             </div>
           </div>
         );
     }
   };
 
   return (
-    <div className="space-y-4 animate-fluid-fade">
-      <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-1">Платежи</h1>
+    <div className="space-y-4 pt-1">
       {renderStep()}
     </div>
   );

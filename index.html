@@ -11,18 +11,18 @@
             theme: {
                 extend: {
                     animation: {
-                        'fluid-up': 'fluidUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
-                        'fluid-down': 'fluidDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
-                        'fluid-fade': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
-                        'fluid-scale': 'scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'fluid-up': 'fluidUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'fluid-down': 'fluidDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'fluid-fade': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'fluid-scale': 'scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
                     },
                     keyframes: {
                         fluidUp: {
-                            '0%': { transform: 'translate3d(0, 30px, 0)', opacity: '0' },
+                            '0%': { transform: 'translate3d(0, 20px, 0)', opacity: '0' },
                             '100%': { transform: 'translate3d(0, 0, 0)', opacity: '1' },
                         },
                         fluidDown: {
-                            '0%': { transform: 'translate3d(0, -30px, 0)', opacity: '0' },
+                            '0%': { transform: 'translate3d(0, -20px, 0)', opacity: '0' },
                             '100%': { transform: 'translate3d(0, 0, 0)', opacity: '1' },
                         },
                         fadeIn: {
@@ -30,7 +30,7 @@
                             '100%': { opacity: '1' },
                         },
                         scaleIn: {
-                            '0%': { transform: 'scale(0.96) translate3d(0, 10px, 0)', opacity: '0' },
+                            '0%': { transform: 'scale(0.97) translate3d(0, 5px, 0)', opacity: '0' },
                             '100%': { transform: 'scale(1) translate3d(0, 0, 0)', opacity: '1' },
                         }
                     }
@@ -43,15 +43,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --app-bg: #f8fafc;
-            --accent-blue: #0088ff;
-            --text-main: #0f172a;
+            --app-bg: #e2e8f0;
+            --accent-red: #ef4444;
+            --text-main: #1e293b;
         }
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            background-color: var(--app-bg);
+            background-color: #f8fafc;
             font-family: 'Manrope', sans-serif;
             color: var(--text-main);
             overflow-x: hidden;
@@ -60,75 +60,48 @@
         }
         #root { min-height: 100%; }
 
-        /* Liquid Background */
-        .liquid-bg {
+        .app-gradient {
             position: fixed;
             inset: 0;
             z-index: -1;
-            overflow: hidden;
-            background: radial-gradient(circle at 50% 0%, #ffffff 0%, #f1f5f9 100%);
+            background: linear-gradient(160deg, #dcfce7 0%, #dbeafe 40%, #f1f5f9 100%);
         }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.12;
-            animation: drift 20s infinite alternate ease-in-out;
-            will-change: transform;
-        }
-        @keyframes drift {
-            0% { transform: translate3d(-10%, -10%, 0) scale(1); }
-            100% { transform: translate3d(15%, 10%, 0) scale(1.1); }
-        }
-        .blob-1 { background: #3b82f6; width: 500px; height: 500px; top: -5%; left: -5%; }
-        .blob-2 { background: #8b5cf6; width: 400px; height: 400px; bottom: 5%; right: -5%; }
 
         .liquid-glass {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.04);
-        }
-
-        .label-caps {
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 10px;
-            font-weight: 800;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .will-change-gpu {
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-            perspective: 1000px;
+        .tile-shadow {
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
         }
 
-        /* Убираем блюр из модалок по умолчанию */
-        .modal-overlay {
-            background-color: rgba(15, 23, 42, 0.4);
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
   }
 }
 </script>
 </head>
 <body>
-    <div class="liquid-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+    <div class="app-gradient"></div>
     <div id="root"></div>
-    <!-- Критически важно: подключаем index.tsx как модуль -->
     <script type="module" src="index.tsx"></script>
 </body>
 </html>

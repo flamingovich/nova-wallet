@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Transaction, Currency } from '../types';
 import Icons from '../components/Icons';
 
@@ -8,30 +8,8 @@ interface HistoryProps {
 }
 
 const History: React.FC<HistoryProps> = ({ transactions }) => {
-  const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [search, setSearch] = useState('');
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
-
-  useEffect(() => {
-    if (selectedTx) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
-    } else {
-      document.body.style.overflow = 'auto';
-      document.body.style.touchAction = 'auto';
-    }
-    return () => { 
-      document.body.style.overflow = 'auto';
-      document.body.style.touchAction = 'auto';
-    };
-  }, [selectedTx]);
-
-  const filtered = transactions.filter(t => {
-    const matchesFilter = filter === 'all' || t.type === filter;
-    const matchesSearch = t.merchant.toLowerCase().includes(search.toLowerCase()) || 
-                          t.category.toLowerCase().includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
 
   const getCurrencySymbol = (cur: Currency) => {
     switch(cur) {
@@ -43,127 +21,155 @@ const History: React.FC<HistoryProps> = ({ transactions }) => {
     }
   };
 
-  const getCategoryMeta = (category: string) => {
-    const cat = category.toLowerCase();
-    if (cat.includes('еда') || cat.includes('food')) {
-      return { icon: 'coffee', color: 'bg-orange-50 text-orange-600 border-orange-100', grad: 'from-orange-400 to-orange-500' };
-    }
-    if (cat.includes('зарплата') || cat.includes('salary')) {
-      return { icon: 'salary', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', grad: 'from-emerald-400 to-emerald-500' };
-    }
-    if (cat.includes('обмен') || cat.includes('crypto')) {
-      return { icon: 'nova', color: 'bg-teal-50 text-teal-600 border-teal-100', grad: 'from-teal-400 to-teal-500' };
-    }
-    if (cat.includes('пополнение')) {
-      return { icon: 'plus', color: 'bg-blue-50 text-blue-600 border-blue-100', grad: 'from-blue-400 to-blue-500' };
-    }
-    if (cat.includes('перевод')) {
-      return { icon: 'send', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', grad: 'from-indigo-400 to-indigo-500' };
-    }
-    return { icon: 'bank', color: 'bg-slate-50 text-slate-400 border-slate-100', grad: 'from-slate-300 to-slate-400' };
+  const getIconBg = (tx: Transaction) => {
+    if (tx.type === 'income') return 'bg-emerald-500 text-white';
+    if (tx.merchant.toLowerCase().includes('santa')) return 'bg-blue-400 text-white';
+    if (tx.category.toLowerCase().includes('перевод')) return 'bg-emerald-500 text-white';
+    return 'bg-blue-500 text-white';
   };
 
+  // Grouping by date
+  const grouped = transactions.reduce((groups, tx) => {
+    const date = new Date(tx.date);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    let dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+    if (date.toDateString() === today.toDateString()) dateStr = 'Сегодня, ' + dateStr;
+    else if (date.toDateString() === yesterday.toDateString()) dateStr = 'Вчера, ' + dateStr;
+
+    if (!groups[dateStr]) groups[dateStr] = [];
+    groups[dateStr].push(tx);
+    return groups;
+  }, {} as Record<string, Transaction[]>);
+
   return (
-    <>
-      <div className="space-y-5 pb-4 text-slate-800 animate-fluid-fade">
-        <div className="flex flex-col space-y-3 mt-1 animate-fluid-down">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">История</h1>
-          <div className="flex bg-slate-100/50 rounded-2xl p-0.5 border border-slate-100">
-            {(['all', 'income', 'expense'] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`flex-1 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
-              >
-                {f === 'all' ? 'Все' : f === 'income' ? 'Доход' : 'Расход'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-200">
-            <Icons name="search" className="w-4 h-4" />
-          </div>
-          <input 
-            type="text"
-            placeholder="Поиск..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-slate-100 rounded-2xl py-3.5 pl-11 pr-4 text-xs font-bold focus:outline-none transition-all"
-          />
-        </div>
-
-        <div className="space-y-2">
-          {filtered.map((tx, idx) => {
-            const meta = getCategoryMeta(tx.category);
-            return (
-              <div 
-                key={tx.id} 
-                onClick={() => setSelectedTx(tx)}
-                className="bg-white rounded-[24px] p-3 flex items-center justify-between border border-slate-50 active:scale-[0.98] transition-all cursor-pointer animate-fluid-up"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${meta.color}`}>
-                    <Icons name={meta.icon} className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-[13px] tracking-tight text-slate-800">{tx.merchant}</h4>
-                    <p className="text-[8px] text-slate-300 font-bold uppercase tracking-widest">{tx.category}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className={`text-[14px] font-black ${tx.type === 'expense' ? 'text-slate-900' : 'text-emerald-500'}`}>
-                    {tx.type === 'expense' ? '−' : '+'}{tx.amount.toLocaleString()} <span className="text-[10px] opacity-20">{getCurrencySymbol(tx.currency)}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    <div className="space-y-4 animate-fluid-fade">
+      {/* Search and Filters Header */}
+      <div className="flex items-center justify-between px-1">
+         <h1 className="text-2xl font-black text-slate-800">История</h1>
+         <Icons name="search" className="w-6 h-6 text-slate-400" />
       </div>
 
+      <div className="flex gap-2 px-1 overflow-x-auto no-scrollbar pb-2">
+         {['Период', 'Вид операции', 'Категория'].map((f) => (
+           <div key={f} className="flex items-center gap-1.5 bg-white border border-slate-100 rounded-full px-3 py-1.5 whitespace-nowrap text-[11px] font-bold text-slate-600 shadow-sm">
+              {f} <Icons name="arrow-down" className="w-3 h-3 text-slate-300" />
+           </div>
+         ))}
+      </div>
+
+      {/* Summary Card REMOVED as requested */}
+
+      {/* List grouped by dates */}
+      <div className="space-y-6 px-1">
+         {(Object.entries(grouped) as [string, Transaction[]][]).map(([date, items]) => (
+           <div key={date} className="space-y-3">
+              <h3 className="text-[15px] font-black text-slate-800 px-1">{date}</h3>
+              <div className="space-y-0.5">
+                 {items.map((tx) => (
+                   <div 
+                     key={tx.id} 
+                     onClick={() => setSelectedTx(tx)}
+                     className="bg-white p-4 first:rounded-t-[24px] last:rounded-b-[24px] flex items-center justify-between border-b border-slate-50 last:border-0 active:bg-slate-50 transition-colors cursor-pointer"
+                   >
+                     <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getIconBg(tx)}`}>
+                           <Icons name={tx.icon === 'plus' ? 'plus' : 'swap'} className={`w-5 h-5 ${tx.type === 'expense' && tx.icon !== 'plus' ? 'rotate-180' : ''}`} />
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[12px] font-black text-slate-800 uppercase leading-tight">{tx.merchant}</span>
+                           <span className="text-[10px] font-bold text-slate-400">Карта *4242</span>
+                           <span className="text-[10px] font-bold text-slate-300">{new Date(tx.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                        </div>
+                     </div>
+                     <div className={`text-sm font-black ${tx.type === 'income' ? 'text-emerald-500' : 'text-slate-800'}`}>
+                        {tx.type === 'income' ? '+' : '-'}{tx.amount.toLocaleString()} <span className="text-[10px]">{getCurrencySymbol(tx.currency)}</span>
+                     </div>
+                   </div>
+                 ))}
+              </div>
+           </div>
+         ))}
+      </div>
+
+      {/* Detail View - Nova Style */}
       {selectedTx && (
-        <div className="fixed inset-0 z-[10000] bg-white flex flex-col animate-fluid-up">
-            <div className={`h-[30vh] w-full flex flex-col items-center justify-center bg-gradient-to-br ${getCategoryMeta(selectedTx.category).grad}`}>
-               <button onClick={() => setSelectedTx(null)} className="absolute top-10 right-6 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-                 <Icons name="qr" className="w-5 h-5 rotate-45" />
-               </button>
-               <div className="w-20 h-20 rounded-[28px] bg-white shadow-xl flex items-center justify-center border-2 border-white/50">
-                  <div className={`${getCategoryMeta(selectedTx.category).color.split(' ')[1]}`}>
-                    <Icons name={getCategoryMeta(selectedTx.category).icon} className="w-10 h-10" />
-                  </div>
-               </div>
-            </div>
-
-            <div className="flex-1 -mt-8 bg-white rounded-t-[40px] p-6 space-y-8 shadow-2xl overflow-y-auto">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight">{selectedTx.merchant}</h3>
-                <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                  {selectedTx.amount.toLocaleString()} <span className="text-xl opacity-20">{getCurrencySymbol(selectedTx.currency)}</span>
+        <div className="fixed inset-0 z-[2000] bg-white flex flex-col animate-fluid-up overflow-y-auto pb-10">
+          <div className="h-12 flex items-center px-4 pt-10">
+             <button onClick={() => setSelectedTx(null)} className="text-slate-800">
+                <Icons name="arrow-up" className="w-6 h-6 -rotate-90" />
+             </button>
+             <div className="flex-1 flex justify-center">
+                <div className="bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black flex items-center gap-1">
+                   <span className="text-blue-600 font-black">N</span> NOVABANK
                 </div>
-                <div className="inline-block px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase">Успешно</div>
-              </div>
+             </div>
+          </div>
 
-              <div className="space-y-0.5 bg-slate-50 p-2 rounded-[28px]">
+          <div className="flex flex-col items-center pt-8 space-y-4 px-6 text-center">
+             <h2 className="text-[14px] font-black uppercase text-slate-800 tracking-tight leading-tight">
+                {selectedTx.merchant}
+             </h2>
+             
+             <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg ${getIconBg(selectedTx)}`}>
+                <Icons name="swap" className={`w-10 h-10 ${selectedTx.type === 'expense' ? 'rotate-180' : ''}`} />
+             </div>
+
+             <div className={`text-3xl font-black ${selectedTx.type === 'income' ? 'text-emerald-500' : 'text-slate-800'}`}>
+                {selectedTx.type === 'income' ? '+' : '-'}{selectedTx.amount.toLocaleString()} <span className="text-xl">{getCurrencySymbol(selectedTx.currency)}</span>
+             </div>
+
+             <div className="flex items-center gap-2 border-t border-slate-100 pt-4 w-full justify-center">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white ${getIconBg(selectedTx)}`}>
+                  <Icons name="swap" className="w-3 h-3" />
+                </div>
+                <span className="text-sm font-bold text-slate-800">Переводы {selectedTx.type === 'income' ? 'от других людей' : ''}</span>
+             </div>
+          </div>
+
+          <div className="mt-8 px-6 space-y-6">
+             <div className="space-y-4">
                 {[
-                    { label: 'Дата', value: new Date(selectedTx.date).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) },
-                    { label: 'Комиссия', value: `${(selectedTx.fee || 0).toFixed(2)} ${getCurrencySymbol(selectedTx.currency)}` },
-                    { label: 'Всего списано', value: `${((selectedTx.amount || 0) + (selectedTx.fee || 0)).toFixed(2)} ${getCurrencySymbol(selectedTx.currency)}` },
-                    { label: 'ID платежа', value: selectedTx.id.slice(-8).toUpperCase() },
-                ].map((row, i) => (
-                    <div key={i} className="flex justify-between items-center px-4 py-4 border-b border-white last:border-0">
-                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{row.label}</span>
-                        <span className="text-[12px] font-bold text-slate-700">{row.value}</span>
-                    </div>
+                  { label: 'Дата и время операции', value: new Date(selectedTx.date).toLocaleString('ru-RU') },
+                  { label: 'Статус операции', value: 'Исполнена' },
+                  { label: 'Отражение операции по счету', value: new Date(selectedTx.date).toLocaleDateString('ru-RU') },
+                  { label: 'Счет', value: '301431PPFW0010270' },
+                  { label: 'Комиссия банка (5%)', value: `${(selectedTx.fee || 0).toFixed(2)} ${getCurrencySymbol(selectedTx.currency)}` },
+                  { label: 'Дополнительная информация', value: `${selectedTx.merchant} Перевод между счетами физических лиц на основании эл. сообщ. от ${new Date(selectedTx.date).toLocaleDateString('ru-RU')}` },
+                ].map((row) => (
+                  <div key={row.label} className="space-y-1">
+                     <p className="text-[12px] font-bold text-slate-400">{row.label}</p>
+                     <p className="text-[14px] font-black text-slate-800 leading-tight">{row.value}</p>
+                  </div>
                 ))}
-              </div>
+             </div>
 
-              <button onClick={() => setSelectedTx(null)} className="w-full bg-slate-900 text-white py-5 rounded-[22px] font-black text-xs uppercase">Закрыть</button>
-            </div>
+             <div className="space-y-3 pt-4 border-t border-slate-50">
+                <button className="w-full flex items-center gap-3 text-slate-800 font-bold py-2">
+                   <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-blue-600">
+                      <Icons name="list" className="w-5 h-5" />
+                   </div>
+                   Чек по операции
+                </button>
+                <button className="w-full flex items-center gap-3 text-slate-800 font-bold py-2">
+                   <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-blue-500">
+                      <Icons name="swap" className="w-5 h-5" />
+                   </div>
+                   Повторить
+                </button>
+                <button className="w-full flex items-center gap-3 text-slate-800 font-bold py-2">
+                   <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-amber-500">
+                      <Icons name="star" className="w-5 h-5" />
+                   </div>
+                   Добавить в шаблоны
+                </button>
+             </div>
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
