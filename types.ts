@@ -10,6 +10,7 @@ export interface Transaction {
   merchant: string;
   date: string;
   icon: string;
+  fee?: number;
   fromCurrency?: Currency;
   toCurrency?: Currency;
 }

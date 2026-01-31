@@ -28,7 +28,7 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      const scrollAmount = window.innerWidth * 0.8;
+      const scrollAmount = window.innerWidth * 0.7;
       scrollContainerRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -69,132 +69,69 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
     }
   };
 
-  const formatCardNumber = (num: string) => {
-    return num;
-  };
-
   const getBrandLogo = (type: string) => {
-    if (type.includes('MIR')) return <div className="text-[14px] font-black italic tracking-tighter text-white">МИР</div>;
-    if (type.includes('Visa')) return <div className="text-[18px] font-black italic tracking-tighter text-white">VISA</div>;
+    if (type.includes('MIR')) return <div className="text-[12px] font-black italic text-white">МИР</div>;
+    if (type.includes('Visa')) return <div className="text-[14px] font-black italic text-white">VISA</div>;
     if (type.includes('MasterCard')) return (
-      <div className="flex -space-x-2">
-        <div className="w-5 h-5 rounded-full bg-[#EB001B]/80"></div>
-        <div className="w-5 h-5 rounded-full bg-[#F79E1B]/80"></div>
+      <div className="flex -space-x-1.5">
+        <div className="w-4 h-4 rounded-full bg-[#EB001B]/80"></div>
+        <div className="w-4 h-4 rounded-full bg-[#F79E1B]/80"></div>
       </div>
     );
-    return <Icons name="nova" className="w-6 h-6 text-white/80" />;
+    return <Icons name="nova" className="w-5 h-5 text-white/80" />;
   };
 
-  const usdtRate = rates[exchangeTo] || 1;
+  const exchangeRateValue = rates[exchangeTo] / rates[exchangeFrom];
 
   return (
-    <div className="space-y-7 pb-2 text-slate-900 will-change-gpu">
+    <div className="space-y-5 pb-4 text-slate-900 will-change-gpu">
       {/* Шапка */}
-      <div className="flex justify-between items-center pt-1 animate-fluid-down">
-        <div className="space-y-0.5">
-          <h1 className="text-2xl font-black tracking-tight text-slate-800">Привет, {state.userName}</h1>
-        </div>
-        <button 
-          onClick={() => { setNewName(state.userName); setIsProfileOpen(true); }}
-          className="relative active:scale-90 transition-all duration-300"
-        >
-          <div className="w-12 h-12 rounded-2xl overflow-hidden p-[1px] bg-white shadow-xl ring-1 ring-slate-100">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Аватар" className="w-full h-full object-cover rounded-[18px] bg-slate-50" />
+      <div className="flex justify-between items-center pt-0 animate-fluid-down">
+        <h1 className="text-xl font-black tracking-tight text-slate-800">Привет, {state.userName}</h1>
+        <button onClick={() => { setNewName(state.userName); setIsProfileOpen(true); }} className="active:scale-90 transition-transform">
+          <div className="w-10 h-10 rounded-xl overflow-hidden bg-white shadow-md ring-1 ring-slate-100 p-0.5">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" className="w-full h-full rounded-[10px] bg-slate-50" />
           </div>
-          <div className="absolute top-0 right-0 w-3 h-3 bg-blue-500 border-2 border-white rounded-full"></div>
         </button>
       </div>
 
       {/* Счета и карты */}
-      <section className="space-y-4 animate-fluid-up relative group" style={{ animationDelay: '0.05s' }}>
+      <section className="space-y-3 animate-fluid-up">
         <div className="flex justify-between items-end px-1">
-          <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Мои счета</h2>
-          <button className="text-[10px] font-black text-blue-500 active:opacity-60 transition-opacity">ВСЕ</button>
-        </div>
-        
-        {/* Стрелки навигации */}
-        <div className="absolute top-1/2 -left-2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
-          <button onClick={() => scroll('left')} className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-xl flex items-center justify-center text-slate-800 active:scale-90 transition-transform">
-             <Icons name="arrow-up" className="w-5 h-5 -rotate-90" />
-          </button>
-        </div>
-        <div className="absolute top-1/2 -right-2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
-          <button onClick={() => scroll('right')} className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-xl flex items-center justify-center text-slate-800 active:scale-90 transition-transform">
-             <Icons name="arrow-up" className="w-5 h-5 rotate-90" />
-          </button>
-        </div>
-        
-        {/* Кнопки-стрелки для мобильных (всегда видны) */}
-        <div className="flex sm:hidden absolute right-0 -top-8 gap-2">
-           <button onClick={() => scroll('left')} className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 active:bg-blue-100 active:text-blue-500 transition-colors">
-              <Icons name="arrow-up" className="w-3 h-3 -rotate-90" />
-           </button>
-           <button onClick={() => scroll('right')} className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 active:bg-blue-100 active:text-blue-500 transition-colors">
-              <Icons name="arrow-up" className="w-3 h-3 rotate-90" />
-           </button>
+          <h2 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Мои счета</h2>
         </div>
 
         <div 
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 pb-2 scroll-smooth"
+          className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-5 px-5 pb-1"
         >
           {state.cards.map((card) => (
             <div 
               key={card.id}
-              className="min-w-[85vw] sm:min-w-[340px] h-[210px] rounded-[28px] p-6 flex flex-col justify-between shadow-2xl relative snap-center border-0 text-white transition-all hover:scale-[1.02] active:scale-[0.98] duration-500 cursor-pointer overflow-hidden group will-change-gpu"
+              className="min-w-[80vw] sm:min-w-[300px] h-[180px] rounded-[24px] p-5 flex flex-col justify-between shadow-xl relative snap-center border-0 text-white transition-all overflow-hidden group will-change-gpu"
               style={{ background: card.color }}
             >
-              {/* Реалистичные текстуры и блики */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-white/5 to-white/10 opacity-60"></div>
-              <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none group-hover:bg-white/20 transition-all duration-700"></div>
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/10 opacity-60"></div>
               
               <div className="flex justify-between items-start z-10">
-                <div className="space-y-4">
-                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-8 rounded-md bg-gradient-to-br from-amber-300 via-amber-200 to-amber-400 shadow-inner relative overflow-hidden flex items-center justify-center border border-amber-500/30">
-                         <div className="absolute inset-0 flex flex-col justify-between p-1">
-                            <div className="h-[1px] w-full bg-black/10"></div>
-                            <div className="h-[1px] w-full bg-black/10"></div>
-                            <div className="h-[1px] w-full bg-black/10"></div>
-                         </div>
-                         <div className="w-4 h-5 border border-black/10 rounded-sm"></div>
-                      </div>
-                      <span className="text-[10px] font-bold tracking-[0.1em] text-white/90 drop-shadow-sm uppercase">Nova Premium</span>
-                   </div>
-                </div>
-                <div className="flex flex-col items-end gap-1">
+                <div className="w-8 h-6 rounded bg-gradient-to-br from-amber-300 to-amber-400 shadow-inner border border-amber-500/20"></div>
+                <div className="flex flex-col items-end">
                    {getBrandLogo(card.type)}
-                   <span className="text-[8px] font-black text-white/40 uppercase tracking-tighter">{card.type.split(' ')[0]}</span>
+                   <span className="text-[7px] font-black text-white/30 uppercase tracking-tighter mt-1">{card.type.split(' ')[0]}</span>
                 </div>
               </div>
 
-              <div className="z-10 mt-2">
-                <p className="text-[9px] font-black text-white/50 mb-0.5 tracking-widest uppercase">Текущий баланс</p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-sm font-black text-white/60">{getCurrencySymbol(card.currency)}</span>
-                  <span className="text-4xl font-black tracking-tighter drop-shadow-xl">
-                    {card.balance.toLocaleString('ru-RU', { minimumFractionDigits: 0 })}
-                  </span>
-                  <span className="text-xl font-medium opacity-40">
-                    .{((card.balance % 1) * 100).toFixed(0).padStart(2, '0').slice(0, 2)}
-                  </span>
+              <div className="z-10">
+                <p className="text-[8px] font-black text-white/50 mb-0.5 uppercase tracking-widest">Баланс</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xs font-black text-white/60">{getCurrencySymbol(card.currency)}</span>
+                  <span className="text-3xl font-black tracking-tighter">{card.balance.toLocaleString('ru-RU')}</span>
                 </div>
               </div>
 
-              <div className="flex justify-between items-end z-10 pt-4 border-t border-white/10">
-                <div className="space-y-1">
-                  <span className="text-[14px] font-mono tracking-[0.25em] text-white/90 drop-shadow-sm">{formatCardNumber(card.number)}</span>
-                  <div className="flex gap-4">
-                    <div className="flex flex-col">
-                       <span className="text-[6px] text-white/40 font-black uppercase">Valid Thru</span>
-                       <span className="text-[9px] font-bold text-white/70">{card.expiry}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
-                  <Icons name="qr" className="w-5 h-5 text-white/80" />
-                </div>
+              <div className="flex justify-between items-end z-10 pt-3 border-t border-white/10">
+                <span className="text-[12px] font-mono tracking-[0.2em] text-white/90">{card.number}</span>
+                <span className="text-[8px] font-bold text-white/60 uppercase">{card.expiry}</span>
               </div>
             </div>
           ))}
@@ -202,244 +139,97 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
       </section>
 
       {/* Быстрые действия */}
-      <div className="liquid-glass p-1.5 rounded-[32px] flex justify-around border border-white shadow-xl animate-fluid-up" style={{ animationDelay: '0.1s' }}>
+      <div className="bg-white/80 backdrop-blur-md p-1 rounded-[28px] flex justify-around border border-white shadow-lg animate-fluid-up">
         {[
-          { label: 'Пополнить', icon: 'plus', action: () => setIsTopUpOpen(true) },
-          { label: 'Обмен', icon: 'nova', color: 'text-emerald-500', action: () => setIsExchangeOpen(true) },
-          { label: 'Перевести', icon: 'send', color: 'text-blue-500' },
+          { label: 'Ввод', icon: 'plus', action: () => setIsTopUpOpen(true) },
+          { label: 'Обмен', icon: 'swap', color: 'text-emerald-500', action: () => setIsExchangeOpen(true) },
+          { label: 'Перевод', icon: 'send', color: 'text-blue-500' },
           { label: 'Еще', icon: 'star' }
         ].map((act, i) => (
-          <button 
-            key={i} 
-            onClick={act.action}
-            className="flex flex-col items-center gap-2 py-4 px-1 group rounded-[26px] active:bg-slate-100/60 transition-all duration-300 w-full"
-          >
-            <div className={`w-12 h-12 rounded-[22px] bg-white shadow-sm border border-slate-50 flex items-center justify-center group-hover:scale-110 group-active:scale-95 transition-all duration-500 ${act.color || 'text-slate-500'}`}>
+          <button key={i} onClick={act.action} className="flex flex-col items-center gap-1.5 py-3 px-1 w-full rounded-[22px] active:bg-slate-50 transition-all">
+            <div className={`w-10 h-10 rounded-2xl bg-white shadow-sm border border-slate-50 flex items-center justify-center ${act.color || 'text-slate-400'}`}>
               <Icons name={act.icon} className="w-5 h-5" />
             </div>
-            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{act.label}</span>
+            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">{act.label}</span>
           </button>
         ))}
       </div>
 
       {/* Операции */}
-      <section className="space-y-4">
-        <div className="flex justify-between items-center px-1 animate-fluid-fade" style={{ animationDelay: '0.15s' }}>
-          <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Последние операции</h2>
-          <button className="text-[10px] font-black text-blue-500 active:opacity-60 transition-opacity">ИСТОРИЯ</button>
+      <section className="space-y-3">
+        <div className="flex justify-between items-center px-1">
+          <h2 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Последние операции</h2>
         </div>
         
-        <div className="space-y-3">
-          {state.transactions.length === 0 ? (
-            <div className="py-10 text-center animate-fluid-up">
-              <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">История пуста</p>
-            </div>
-          ) : (
-            state.transactions.slice(0, 4).map((tx, idx) => (
-              <div 
-                key={tx.id} 
-                style={{ animationDelay: `${0.2 + idx * 0.04}s` }}
-                className="p-4 bg-white rounded-[28px] flex items-center justify-between group active:scale-[0.98] transition-all duration-500 cursor-pointer border border-slate-50 shadow-sm hover:shadow-md animate-fluid-up will-change-gpu"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${tx.type === 'exchange' ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-50 text-slate-400 group-hover:text-blue-500 group-hover:bg-blue-50'}`}>
-                    <Icons name={tx.icon} className="w-6 h-6" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <h4 className="font-bold text-[15px] tracking-tight text-slate-800">{tx.merchant}</h4>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{tx.category}</p>
-                  </div>
+        <div className="space-y-2">
+          {state.transactions.slice(0, 4).map((tx) => (
+            <div key={tx.id} className="p-3 bg-white rounded-[22px] flex items-center justify-between border border-slate-50 shadow-sm active:scale-[0.98] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                  <Icons name={tx.icon} className="w-5 h-5" />
                 </div>
-                <div className="text-right flex flex-col items-end">
-                  <div className={`flex items-baseline gap-1 text-[16px] font-black ${tx.type === 'expense' ? 'text-slate-800' : tx.type === 'exchange' ? 'text-blue-600' : 'text-emerald-500'}`}>
-                    <span>{tx.type === 'expense' ? '−' : tx.type === 'exchange' ? '⇌' : '+'}</span>
-                    <span className="text-[11px] opacity-40">{getCurrencySymbol(tx.currency)}</span>
-                    <span>{tx.amount.toFixed(0)}</span>
-                  </div>
-                  <div className="text-[8px] text-slate-200 font-mono mt-0.5 uppercase tracking-tighter">{tx.id.slice(-4)}</div>
+                <div>
+                  <h4 className="font-bold text-sm tracking-tight text-slate-800">{tx.merchant}</h4>
+                  <p className="text-[8px] text-slate-300 font-bold uppercase tracking-widest">{tx.category}</p>
                 </div>
               </div>
-            ))
-          )}
+              <div className="text-right">
+                <div className={`text-sm font-black ${tx.type === 'expense' ? 'text-slate-800' : 'text-emerald-500'}`}>
+                  {tx.type === 'expense' ? '−' : '+'}{tx.amount.toLocaleString()} <span className="text-[9px] opacity-30">{getCurrencySymbol(tx.currency)}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Модалка Профиля */}
+      {/* Модалки (упрощенные и компактные) */}
       {isProfileOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fluid-fade">
-          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setIsProfileOpen(false)}></div>
-          <div className="bg-white w-full max-w-sm rounded-[44px] p-8 space-y-10 relative border border-white shadow-2xl animate-fluid-scale">
-            <div className="flex justify-center">
-               <div className="w-12 h-1 bg-slate-100 rounded-full"></div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fluid-fade">
+          <div className="bg-white w-full max-w-xs rounded-[32px] p-6 space-y-6 shadow-2xl animate-fluid-scale">
+            <h3 className="text-lg font-black text-center">Профиль</h3>
+            <div className="space-y-4">
+              <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full bg-slate-50 rounded-xl p-3 text-center font-bold text-sm focus:outline-none" />
+              <button onClick={handleNameSave} className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm">Сохранить</button>
+              <button onClick={() => { onResetWallet(); setIsProfileOpen(false); }} className="w-full text-rose-500 font-bold text-[9px] uppercase tracking-widest">Сброс данных</button>
             </div>
-            
-            <div className="text-center space-y-4">
-                <div className="w-24 h-24 rounded-[32px] overflow-hidden p-[2px] bg-slate-100 mx-auto shadow-2xl border-4 border-white">
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Аватар" className="w-full h-full object-cover rounded-[28px]" />
-                </div>
-                <h3 className="text-2xl font-black tracking-tight text-slate-900">Настройки профиля</h3>
-            </div>
-
-            <div className="space-y-6">
-              <div className="space-y-3">
-                 <p className="label-caps text-slate-400 ml-1 uppercase">Ваше имя</p>
-                 <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-[24px] px-6 transition-all focus-within:border-blue-400 focus-within:bg-white">
-                    <input 
-                      autoFocus
-                      type="text" 
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      placeholder="Введите имя..."
-                      className="w-full bg-transparent py-5 text-xl font-black text-center focus:outline-none text-slate-900 placeholder:text-slate-200"
-                    />
-                 </div>
-              </div>
-
-              <div className="space-y-2 pt-4">
-                <button 
-                  onClick={handleNameSave}
-                  className="w-full bg-blue-600 text-white rounded-[24px] py-5 font-black text-md active:scale-[0.97] transition-all shadow-xl shadow-blue-100"
-                >
-                  Сохранить
-                </button>
-                <button 
-                  onClick={() => { onResetWallet(); setIsProfileOpen(false); }}
-                  className="w-full bg-rose-50 text-rose-600 rounded-[24px] py-5 font-black text-[11px] uppercase tracking-widest active:scale-[0.97] transition-all border border-rose-100"
-                >
-                  Сбросить кошелек
-                </button>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => setIsProfileOpen(false)}
-              className="w-full text-slate-300 font-black text-[10px] uppercase tracking-widest hover:text-slate-500"
-            >
-              Отмена
-            </button>
+            <button onClick={() => setIsProfileOpen(false)} className="w-full text-slate-300 font-bold text-[9px] uppercase">Закрыть</button>
           </div>
         </div>
       )}
 
-      {/* Модалка обмена USDT */}
       {isExchangeOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fluid-fade">
-          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setIsExchangeOpen(false)}></div>
-          <div className="bg-white w-full max-w-sm rounded-[44px] p-8 space-y-8 relative border border-white shadow-2xl animate-fluid-scale">
-            <div className="flex justify-center">
-               <div className="w-12 h-1 bg-slate-100 rounded-full"></div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fluid-fade">
+          <div className="bg-white w-full max-w-xs rounded-[36px] p-6 space-y-6 shadow-2xl animate-fluid-scale">
+            <div className="text-center space-y-1">
+                <h3 className="text-xl font-black">Курсы валют</h3>
+                <p className="text-[8px] font-black text-emerald-500 uppercase">1 {exchangeFrom} = {exchangeRateValue.toFixed(2)} {exchangeTo}</p>
             </div>
-            
-            <div className="text-center space-y-2">
-                <h3 className="text-2xl font-black tracking-tight text-slate-900">Крипто Обмен</h3>
-                <div className="inline-block px-4 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">
-                   <p className="text-[9px] font-black text-emerald-600 uppercase tracking-wider">1 USDT ≈ {usdtRate.toFixed(2)} {exchangeTo}</p>
-                </div>
+            <div className="space-y-4">
+               <div className="relative">
+                  <input type="number" value={exchangeAmount} onChange={(e) => setExchangeAmount(e.target.value)} placeholder="Сумма" className="w-full bg-slate-50 rounded-2xl p-4 text-center font-black text-2xl focus:outline-none" />
+               </div>
+               <div className="flex gap-2">
+                  {(['RUB', 'USD', 'EUR'] as Currency[]).map(cur => (
+                    <button key={cur} onClick={() => setExchangeTo(cur)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-black ${exchangeTo === cur ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>{cur}</button>
+                  ))}
+               </div>
+               <button onClick={handleExchange} className="w-full bg-emerald-500 text-white py-4 rounded-xl font-black text-sm shadow-lg shadow-emerald-100">Обменять</button>
             </div>
-
-            <div className="space-y-6">
-              <div className="space-y-3">
-                 <p className="label-caps text-slate-400 ml-1">ОТДАЕТЕ USDT</p>
-                 <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-[28px] px-8 transition-all focus-within:border-emerald-400 focus-within:bg-white group">
-                    <input 
-                      autoFocus
-                      type="number" 
-                      value={exchangeAmount}
-                      onChange={(e) => setExchangeAmount(e.target.value)}
-                      placeholder="0.00"
-                      className="w-full bg-transparent py-7 text-4xl font-black text-center focus:outline-none text-slate-900 placeholder:text-slate-200"
-                    />
-                    <span className="text-2xl font-black text-slate-300 group-focus-within:text-emerald-400 ml-2 transition-colors">₮</span>
-                 </div>
-              </div>
-
-              <div className="space-y-3">
-                 <p className="label-caps text-slate-400 ml-1">ПОЛУЧАЕТЕ В</p>
-                 <div className="flex gap-2">
-                    {(['RUB', 'USD', 'EUR'] as Currency[]).map(cur => (
-                      <button 
-                        key={cur}
-                        onClick={() => setExchangeTo(cur)}
-                        className={`flex-1 py-4 rounded-2xl border-2 font-black text-xs transition-all duration-300 active:scale-95 ${exchangeTo === cur ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-200' : 'bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100'}`}
-                      >
-                        {cur}
-                      </button>
-                    ))}
-                 </div>
-              </div>
-
-              <div className="p-6 bg-slate-900 rounded-[32px] flex justify-between items-center shadow-2xl relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] relative z-10">К ПОЛУЧЕНИЮ</span>
-                  <div className="flex items-center gap-2 relative z-10">
-                    <span className="text-sm font-black text-emerald-500">{getCurrencySymbol(exchangeTo)}</span>
-                    <span className="text-2xl font-black text-white">
-                      {(parseFloat(exchangeAmount || '0') * usdtRate).toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
-                    </span>
-                    <span className="text-xs font-black text-white/30">.00</span>
-                  </div>
-              </div>
-            </div>
-
-            <button 
-              onClick={handleExchange}
-              className="w-full bg-emerald-500 text-white rounded-[28px] py-6 font-black text-lg active:scale-[0.97] transition-all duration-500 shadow-xl shadow-emerald-100 hover:bg-emerald-600"
-            >
-              Обменять USDT
-            </button>
+            <button onClick={() => setIsExchangeOpen(false)} className="w-full text-slate-300 font-bold text-[9px] uppercase">Отмена</button>
           </div>
         </div>
       )}
 
-      {/* Модалка пополнения */}
       {isTopUpOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fluid-fade">
-          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setIsTopUpOpen(false)}></div>
-          <div className="bg-white w-full max-w-sm rounded-[44px] p-8 space-y-8 relative border border-white shadow-2xl animate-fluid-scale">
-            <div className="flex justify-center">
-               <div className="w-12 h-1 bg-slate-100 rounded-full"></div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fluid-fade">
+          <div className="bg-white w-full max-w-xs rounded-[36px] p-6 space-y-6 shadow-2xl animate-fluid-scale">
+            <h3 className="text-xl font-black text-center">Пополнение</h3>
+            <div className="space-y-4">
+               <input type="number" value={topUpAmount} onChange={(e) => setTopUpAmount(e.target.value)} placeholder="0.00" className="w-full bg-slate-50 rounded-2xl p-4 text-center font-black text-2xl focus:outline-none" />
+               <button onClick={handleTopUp} className="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-sm shadow-lg">Пополнить</button>
             </div>
-            
-            <div className="text-center space-y-2">
-                <h3 className="text-2xl font-black tracking-tight text-slate-900">Пополнение</h3>
-                <p className="label-caps text-slate-400">ВЫБЕРИТЕ СУММУ</p>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                {state.cards.map(card => (
-                  <button 
-                    key={card.id}
-                    onClick={() => setSelectedCardId(card.id)}
-                    className={`flex-1 min-w-[100px] p-4 rounded-2xl border-2 transition-all duration-300 text-left active:scale-95 ${selectedCardId === card.id ? 'bg-blue-50 border-blue-500' : 'bg-slate-50 border-transparent hover:bg-slate-100'}`}
-                  >
-                    <p className="text-[10px] font-black text-blue-600 opacity-60 uppercase mb-1">{card.currency}</p>
-                    <p className="text-sm font-black text-slate-900">{card.balance.toLocaleString()}</p>
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-[28px] px-8 transition-all focus-within:border-blue-400 focus-within:bg-white group">
-                <input 
-                  autoFocus
-                  type="number" 
-                  value={topUpAmount}
-                  onChange={(e) => setTopUpAmount(e.target.value)}
-                  placeholder="0.00"
-                  className="w-full bg-transparent py-7 text-4xl font-black text-center focus:outline-none text-slate-900 placeholder:text-slate-200"
-                />
-                <span className="text-2xl font-black text-slate-300 group-focus-within:text-blue-500 ml-2 transition-colors">
-                  {getCurrencySymbol(state.cards.find(c => c.id === selectedCardId)?.currency || 'RUB')}
-                </span>
-              </div>
-            </div>
-
-            <button 
-              onClick={handleTopUp}
-              className="w-full bg-blue-600 text-white rounded-[28px] py-6 font-black text-lg active:scale-[0.97] transition-all duration-300 shadow-xl shadow-blue-100 hover:bg-blue-700"
-            >
-              Подтвердить
-            </button>
+            <button onClick={() => setIsTopUpOpen(false)} className="w-full text-slate-300 font-bold text-[9px] uppercase">Отмена</button>
           </div>
         </div>
       )}

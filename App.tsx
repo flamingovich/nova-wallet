@@ -8,20 +8,11 @@ import History from './pages/History';
 import Exchange from './pages/Exchange';
 import { AppState, Currency } from './types';
 
-const STORAGE_KEY = 'novabank_state_v1';
+const STORAGE_KEY = 'novabank_state_v2';
 
 const INITIAL_STATE: AppState = {
   userName: 'Алексей',
   cards: [
-    {
-      id: 'c4',
-      number: 'TRC20 •••• 9921',
-      balance: 0.00,
-      currency: 'USDT',
-      type: 'USDT Crypto Card',
-      color: 'linear-gradient(135deg, #26A17B 0%, #1a7c5e 100%)',
-      expiry: '∞'
-    },
     {
       id: 'c1',
       number: '•••• 4251',
@@ -30,6 +21,15 @@ const INITIAL_STATE: AppState = {
       type: 'RUB MIR Card',
       color: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
       expiry: '12/28'
+    },
+    {
+      id: 'c4',
+      number: 'TRC20 •••• 9921',
+      balance: 0.00,
+      currency: 'USDT',
+      type: 'USDT Crypto Card',
+      color: 'linear-gradient(135deg, #26A17B 0%, #1a7c5e 100%)',
+      expiry: '∞'
     },
     {
       id: 'c2',
@@ -67,10 +67,14 @@ const App: React.FC = () => {
 
   const fetchRates = async () => {
     try {
-      const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=RUB,USD,EUR,USDT');
+      // Using a more reliable fiat currency API
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
       const data = await response.json();
-      if (data && data.RUB) {
-        setRates(data);
+      if (data && data.rates) {
+        setRates({
+          ...data.rates,
+          USDT: 1 // USDT is pegged to USD
+        });
       }
     } catch (err) {
       console.error("Ошибка загрузки курсов:", err);
@@ -79,7 +83,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchRates();
-    const interval = setInterval(fetchRates, 30000);
+    const interval = setInterval(fetchRates, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -107,23 +111,24 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const makeTransaction = useCallback((merchant: string, amount: number, currency: Currency) => {
+  const makeTransaction = useCallback((merchant: string, amount: number, currency: Currency, totalDebit: number, fee: number) => {
     setState(prev => {
       const card = prev.cards.find(c => c.currency === currency);
-      if (!card || card.balance < amount) return prev;
+      if (!card || card.balance < totalDebit) return prev;
       return {
         ...prev,
-        cards: prev.cards.map(c => c.id === card.id ? { ...c, balance: c.balance - amount } : c),
+        cards: prev.cards.map(c => c.id === card.id ? { ...c, balance: c.balance - totalDebit } : c),
         transactions: [
           {
             id: Date.now().toString(),
             type: 'expense',
-            amount,
+            amount, // Только отправленная сумма
             currency,
             category: 'Перевод',
             merchant,
             date: new Date().toISOString(),
-            icon: 'send'
+            icon: 'send',
+            fee // Храним комиссию отдельно
           },
           ...prev.transactions
         ]
@@ -172,7 +177,7 @@ const App: React.FC = () => {
   }, []);
 
   const resetWallet = useCallback(() => {
-    if (window.confirm('Вы уверены, что хотите сбросить кошелек? Все балансы и история транзакций будут удалены.')) {
+    if (window.confirm('Вы уверены, что хотите сбросить кошелек?')) {
       localStorage.removeItem(STORAGE_KEY);
       setState(INITIAL_STATE);
     }
