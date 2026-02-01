@@ -32,17 +32,23 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
   const getCardBrandName = (type: string) => {
     if (type.includes('MIR')) return 'МИР';
     if (type.includes('Visa')) return 'VISA';
-    if (type.includes('MasterCard')) return 'MasterCard';
-    return 'NOVA';
+    return '';
   };
 
   const getCardBrandColor = (type: string) => {
     if (type.includes('MIR')) return 'bg-[#1c2e4a]';
     if (type.includes('Visa')) return 'bg-[#1a1f71]';
-    if (type.includes('MasterCard')) return 'bg-[#eb001b]';
+    if (type.includes('MasterCard')) return 'bg-[#1e1e1e]';
     if (type.includes('USDT')) return 'bg-[#26A17B]';
     return 'bg-blue-600';
   };
+
+  const MasterCardLogo = () => (
+    <div className="flex -space-x-1 items-center justify-center h-full">
+      <div className="w-2.5 h-2.5 rounded-full bg-[#eb001b]"></div>
+      <div className="w-2.5 h-2.5 rounded-full bg-[#f79e1b] opacity-90"></div>
+    </div>
+  );
 
   const handleTopUpFromModal = () => {
     const amt = parseFloat(topUpAmount);
@@ -53,6 +59,122 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
     }
   };
 
+  // View for the detailed account screen as a standalone page
+  if (selectedCard) {
+    return (
+      <div className="fixed inset-0 z-[5000] bg-white flex flex-col animate-fluid-fade overflow-hidden">
+        {/* Strictly Black Header covering safe area */}
+        <div className="bg-[#1c1c1e] text-white pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-12 px-6 rounded-b-[48px] shadow-2xl relative shrink-0">
+          <div className="flex justify-between items-center mb-8">
+            <button onClick={() => setSelectedCard(null)} className="p-2 -ml-2 active:opacity-50">
+              <Icons name="arrow-up" className="w-6 h-6 -rotate-90" />
+            </button>
+            <h2 className="text-lg font-black tracking-tight">Счёт</h2>
+            <button className="p-2 -mr-2 opacity-60">
+              <Icons name="chat" className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center text-center">
+            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2">Текущий остаток</p>
+            <div className="flex items-baseline gap-2 mb-10">
+              <span className="text-5xl font-black tracking-tighter">{selectedCard.balance.toLocaleString('ru-RU')}</span>
+              <span className="text-2xl font-bold opacity-50">{getCurrencySymbol(selectedCard.currency)}</span>
+            </div>
+          </div>
+
+          {/* Action Buttons Overlaying the curve */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[90%] grid grid-cols-3 gap-3 z-[5010]">
+            <button 
+              onClick={() => setIsTopUpOpen(true)}
+              className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
+            >
+              <Icons name="plus" className="w-6 h-6 text-slate-800" />
+              <span className="text-[10px] font-black text-slate-800">Пополнить</span>
+            </button>
+            <button 
+              onClick={() => { setSelectedCard(null); navigate('/transfers'); }}
+              className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
+            >
+              <Icons name="send" className="w-6 h-6 text-slate-800 rotate-180" />
+              <span className="text-[10px] font-black text-slate-800">Перевести</span>
+            </button>
+            <button 
+              onClick={() => { setSelectedCard(null); navigate('/history'); }}
+              className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
+            >
+              <Icons name="clock" className="w-6 h-6 text-slate-800" />
+              <span className="text-[10px] font-black text-slate-800">История</span>
+            </button>
+          </div>
+        </div>
+
+        {/* List Content - Compact & Clean */}
+        <div className="flex-1 overflow-y-auto no-scrollbar pt-16 px-6 pb-12">
+          <div className="space-y-0.5">
+            {[
+              { icon: 'list', label: 'Выписка по счету', color: 'bg-indigo-50 text-indigo-500' },
+              { icon: 'nova', label: 'Отображать виджет на Главной', toggle: true, color: 'bg-blue-50 text-blue-500', active: true },
+              { icon: 'nova', label: 'Отображать сумму на виджете', toggle: true, color: 'bg-blue-50 text-blue-500', active: true },
+              { icon: 'credit-card', label: 'Реквизиты счёта', color: 'bg-purple-50 text-purple-500' },
+              { icon: 'list', label: 'Справка для посольства', color: 'bg-indigo-50 text-indigo-500' },
+              { icon: 'chat', label: 'Получать переводы на этот счёт', toggle: true, sub: 'По номеру телефона', color: 'bg-blue-50 text-blue-500', active: true },
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${item.color} shrink-0`}>
+                    <Icons name={item.icon} className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-black text-slate-800 leading-tight">{item.label}</p>
+                    {item.sub && <p className="text-[9px] text-slate-400 font-bold mt-0.5">{item.sub}</p>}
+                  </div>
+                </div>
+                {item.toggle ? (
+                  <div className={`w-9 h-5.5 ${item.active ? 'bg-blue-600' : 'bg-slate-200'} rounded-full flex items-center px-0.5 shadow-inner transition-colors`}>
+                    <div className={`w-4.5 h-4.5 bg-white rounded-full ${item.active ? 'ml-auto' : 'mr-auto'} shadow-md`}></div>
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* TopUp Modal */}
+        {isTopUpOpen && (
+          <div className="fixed inset-0 z-[6000] flex items-end justify-center bg-black/40 backdrop-blur-sm p-4 pb-24">
+            <div className="bg-white w-full max-w-sm rounded-[40px] p-8 space-y-6 animate-fluid-up">
+              <div className="text-center">
+                <h3 className="text-xl font-black text-slate-800">Пополнить</h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 italic">
+                  •••• {selectedCard?.number.slice(-4)}
+                </p>
+              </div>
+              <div className="space-y-4">
+                <div className="relative">
+                  <input 
+                    autoFocus
+                    type="number" 
+                    value={topUpAmount} 
+                    onChange={(e) => setTopUpAmount(e.target.value)} 
+                    placeholder="0" 
+                    className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 text-center font-black text-4xl focus:outline-none text-slate-800 placeholder:text-slate-200" 
+                  />
+                  <span className="absolute right-6 top-1/2 -translate-y-1/2 font-black text-slate-300">
+                    {getCurrencySymbol(selectedCard?.currency || 'RUB')}
+                  </span>
+                </div>
+                <button onClick={handleTopUpFromModal} className="w-full bg-slate-900 text-white py-5 rounded-[24px] font-black text-sm active:scale-95 transition-all">Подтвердить</button>
+                <button onClick={() => setIsTopUpOpen(false)} className="w-full text-slate-300 font-black text-[11px] uppercase tracking-widest py-2">Отмена</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Main Home View
   return (
     <div className="space-y-6 pb-4 animate-fluid-fade">
       {/* Header with profile */}
@@ -90,8 +212,10 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
             style={{ background: card.color }}
             className="h-36 rounded-[28px] p-4 flex flex-col justify-between tile-shadow border border-white/10 active:scale-95 transition-all cursor-pointer relative overflow-hidden text-white"
           >
-            <div className={`absolute top-4 right-4 w-8 h-5 ${getCardBrandColor(card.type)} rounded shadow-inner border border-white/20 flex items-center justify-center text-[6px] font-black uppercase`}>
-              {getCardBrandName(card.type)}
+            <div className={`absolute top-4 right-4 w-8 h-5 ${getCardBrandColor(card.type)} rounded shadow-inner border border-white/20 flex items-center justify-center overflow-hidden`}>
+              {card.type.includes('MasterCard') ? <MasterCardLogo /> : (
+                <span className="text-[6px] font-black uppercase">{getCardBrandName(card.type)}</span>
+              )}
             </div>
             
             <div className="flex flex-col z-10">
@@ -102,135 +226,15 @@ const Home: React.FC<HomeProps> = ({ state, onTopUp, rates, onExchange, onSetNam
             <div className="space-y-0.5 z-10">
                <p className="text-[10px] font-mono opacity-50 leading-tight tracking-wider">•••• {card.number.slice(-4)}</p>
                <div className="flex items-baseline gap-1">
-                 <span className="text-[28px] font-black tracking-tighter leading-none">
+                 <span className="text-[20px] font-black tracking-tighter leading-none">
                    {card.balance.toLocaleString('ru-RU')}
                  </span>
-                 <span className="text-sm font-black opacity-40">{getCurrencySymbol(card.currency)}</span>
+                 <span className="text-[10px] font-black opacity-40">{getCurrencySymbol(card.currency)}</span>
                </div>
             </div>
           </div>
         ))}
       </div>
-
-      {/* Detailed Card View - Full screen black support */}
-      {selectedCard && (
-        <div className="fixed inset-0 z-[2000] bg-black flex flex-col animate-fluid-up overflow-hidden">
-          {/* Header Part - Strictly Black */}
-          <div className="bg-[#1c1c1e] text-white pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-12 px-6 rounded-b-[48px] shadow-2xl relative shrink-0">
-             <div className="flex justify-between items-center mb-8">
-                <button onClick={() => setSelectedCard(null)} className="p-2 -ml-2">
-                   <Icons name="arrow-up" className="w-6 h-6 -rotate-90" />
-                </button>
-                <h2 className="text-lg font-black tracking-tight">Счёт</h2>
-                <button className="p-2 -mr-2 opacity-60">
-                   <Icons name="chat" className="w-6 h-6" />
-                </button>
-             </div>
-
-             <div className="flex flex-col items-center text-center">
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2">Текущий остаток</p>
-                <div className="flex items-baseline gap-2 mb-8">
-                   <span className="text-5xl font-black tracking-tighter">{selectedCard.balance.toLocaleString('ru-RU')}</span>
-                   <span className="text-2xl font-bold opacity-50">{getCurrencySymbol(selectedCard.currency)}</span>
-                </div>
-                
-                <div className="flex flex-col items-center gap-2 mb-2">
-                   <div className="w-16 h-10 bg-amber-400 rounded-lg shadow-xl flex flex-col items-center justify-center text-[10px] font-black text-white relative">
-                      <span className="text-[6px] absolute top-1 right-2 opacity-50">4242</span>
-                      <span className="mt-1">{getCardBrandName(selectedCard.type)}</span>
-                   </div>
-                </div>
-             </div>
-
-             {/* Action Buttons */}
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[90%] grid grid-cols-3 gap-3 z-[2010]">
-                <button 
-                  onClick={() => setIsTopUpOpen(true)}
-                  className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
-                >
-                   <Icons name="plus" className="w-6 h-6 text-slate-800" />
-                   <span className="text-[10px] font-black text-slate-800">Пополнить</span>
-                </button>
-                <button 
-                  onClick={() => { setSelectedCard(null); navigate('/transfers'); }}
-                  className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
-                >
-                   <Icons name="send" className="w-6 h-6 text-slate-800 rotate-180" />
-                   <span className="text-[10px] font-black text-slate-800">Перевести</span>
-                </button>
-                <button 
-                  onClick={() => { setSelectedCard(null); navigate('/history'); }}
-                  className="bg-white py-5 rounded-[24px] shadow-2xl flex flex-col items-center gap-1.5 active:scale-95 transition-all border border-slate-50"
-                >
-                   <Icons name="clock" className="w-6 h-6 text-slate-800" />
-                   <span className="text-[10px] font-black text-slate-800">История</span>
-                </button>
-             </div>
-          </div>
-
-          {/* List Content - Background White for readability below header */}
-          <div className="flex-1 overflow-y-auto no-scrollbar pt-16 px-6 pb-32 bg-white">
-             <div className="space-y-0">
-               {[
-                 { icon: 'list', label: 'Выписка по счету', color: 'bg-blue-50 text-blue-500' },
-                 { icon: 'nova', label: 'Отображать виджет на Главной', toggle: true, color: 'bg-blue-50 text-blue-500', active: true },
-                 { icon: 'nova', label: 'Отображать сумму на виджете', toggle: true, color: 'bg-blue-50 text-blue-500', active: true },
-                 { icon: 'credit-card', label: 'Реквизиты счёта', color: 'bg-purple-50 text-purple-500' },
-                 { icon: 'list', label: 'Справка для посольства', color: 'bg-indigo-50 text-indigo-500' },
-                 { icon: 'chat', label: 'Получать переводы на этот счёт', toggle: true, sub: 'По номеру телефона', color: 'bg-blue-50 text-blue-500', active: true },
-               ].map((item, idx) => (
-                 <div key={idx} className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0">
-                    <div className="flex items-center gap-3.5">
-                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.color}`}>
-                          <Icons name={item.icon} className="w-5 h-5" />
-                       </div>
-                       <div>
-                          <p className="text-[14px] font-black text-slate-800 leading-tight">{item.label}</p>
-                          {item.sub && <p className="text-[9px] text-slate-400 font-bold mt-0.5">{item.sub}</p>}
-                       </div>
-                    </div>
-                    {item.toggle ? (
-                      <div className={`w-10 h-6 ${item.active ? 'bg-blue-600' : 'bg-slate-200'} rounded-full flex items-center px-0.5 shadow-inner transition-colors`}>
-                         <div className={`w-5 h-5 bg-white rounded-full ${item.active ? 'ml-auto' : 'mr-auto'} shadow-md`}></div>
-                      </div>
-                    ) : null}
-                 </div>
-               ))}
-             </div>
-          </div>
-        </div>
-      )}
-
-      {/* TopUp Modal */}
-      {isTopUpOpen && (
-        <div className="fixed inset-0 z-[3000] flex items-end justify-center bg-black/40 backdrop-blur-sm p-4 pb-24">
-          <div className="bg-white w-full max-w-sm rounded-[40px] p-8 space-y-6 animate-fluid-up">
-            <div className="text-center">
-               <h3 className="text-xl font-black text-slate-800">Пополнить</h3>
-               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 italic">
-                 •••• {selectedCard?.number.slice(-4)}
-               </p>
-            </div>
-            <div className="space-y-4">
-               <div className="relative">
-                  <input 
-                    autoFocus
-                    type="number" 
-                    value={topUpAmount} 
-                    onChange={(e) => setTopUpAmount(e.target.value)} 
-                    placeholder="0" 
-                    className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 text-center font-black text-4xl focus:outline-none text-slate-800 placeholder:text-slate-200" 
-                  />
-                  <span className="absolute right-6 top-1/2 -translate-y-1/2 font-black text-slate-300">
-                    {getCurrencySymbol(selectedCard?.currency || 'RUB')}
-                  </span>
-               </div>
-               <button onClick={handleTopUpFromModal} className="w-full bg-slate-900 text-white py-5 rounded-[24px] font-black text-sm active:scale-95 transition-all">Подтвердить</button>
-               <button onClick={() => setIsTopUpOpen(false)} className="w-full text-slate-300 font-black text-[11px] uppercase tracking-widest py-2">Отмена</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

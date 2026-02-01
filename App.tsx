@@ -8,8 +8,8 @@ import History from './pages/History';
 import Exchange from './pages/Exchange';
 import { AppState, Currency } from './types';
 
-// Обновленный ключ для принудительного сброса балансов в 0
-const STORAGE_KEY = 'novabank_state_v6_zero_final';
+// Ключ для сброса состояния всех пользователей в 0
+const STORAGE_KEY = 'novabank_state_v7_final_zero';
 
 const INITIAL_STATE: AppState = {
   userName: 'Алексей',

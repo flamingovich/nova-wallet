@@ -80,7 +80,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
       setTimeout(() => {
         onSend(verifiedName || recipient || selectedType?.label || 'Перевод', amt, selectedCard.currency, totalDebit, fee);
         setStep('success');
-      }, 1500);
+      }, 1800);
     }
   };
 
@@ -106,11 +106,11 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                   key={card.id}
                   onClick={() => { setSelectedCard(card); setStep('select-type'); }}
                   style={{ background: card.color }}
-                  className="w-full p-6 rounded-[32px] flex items-center justify-between shadow-xl active:scale-[0.98] transition-all relative overflow-hidden text-white border border-white/10"
+                  className="w-full p-6 rounded-[32px] flex items-center justify-between shadow-xl active:scale-[0.98] transition-all relative overflow-hidden text-white border border-white/20"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-full bg-white/5 blur-xl -skew-x-12 translate-x-1/2"></div>
+                  <div className="absolute top-0 right-0 w-32 h-full bg-white/5 blur-2xl -skew-x-12 translate-x-1/2"></div>
                   <div className="flex items-center gap-4 relative z-10">
-                    <div className={`w-12 h-8 ${getCardBrandColorClass(card.type)} rounded shadow-md border border-white/20 flex items-center justify-center text-[8px] font-black text-white uppercase`}>
+                    <div className={`w-12 h-8 ${getCardBrandColorClass(card.type)} rounded shadow-md border border-white/30 flex items-center justify-center text-[8px] font-black text-white uppercase`}>
                       {getCardBrandName(card.type)}
                     </div>
                     <div className="text-left">
@@ -119,7 +119,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     </div>
                   </div>
                   <div className="text-right relative z-10">
-                    <p className="font-black text-[22px] tracking-tighter">{card.balance.toLocaleString()} {getCurrencySymbol(card.currency)}</p>
+                    <p className="font-black text-[22px] tracking-tighter leading-none">{card.balance.toLocaleString()} {getCurrencySymbol(card.currency)}</p>
                   </div>
                 </button>
               ))}
@@ -179,11 +179,11 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                     className="w-full p-5 rounded-[32px] flex items-center justify-between shadow-lg text-white active:scale-[0.99] transition-all relative overflow-hidden"
                    >
                       <div className="flex items-center gap-4 relative z-10">
-                         <div className={`w-12 h-8 ${getCardBrandColorClass(selectedCard?.type || '')} rounded shadow-sm border border-white/20 flex items-center justify-center text-[8px] font-black text-white relative`}>
+                         <div className={`w-12 h-8 ${getCardBrandColorClass(selectedCard?.type || '')} rounded shadow-sm border border-white/30 flex items-center justify-center text-[8px] font-black text-white uppercase`}>
                             {getCardBrandName(selectedCard?.type || '')}
                          </div>
                          <div className="text-left">
-                            <p className="font-black text-[17px] leading-tight">{selectedCard?.balance.toLocaleString()} {symbol}</p>
+                            <p className="font-black text-[17px] leading-tight tracking-tight">{selectedCard?.balance.toLocaleString()} {symbol}</p>
                             <p className="text-[10px] font-bold opacity-60 italic">•••• {selectedCard?.number.slice(-4)}</p>
                          </div>
                       </div>
@@ -203,7 +203,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                                setRecipient(v.match(/.{1,4}/g)?.join(' ') || v);
                             }}
                             placeholder="Номер карты"
-                            className="bg-transparent text-[16px] font-bold text-slate-800 focus:outline-none w-full placeholder:text-slate-400"
+                            className="bg-transparent text-[16px] font-bold text-slate-800 focus:outline-none w-full placeholder:text-slate-400 tracking-tight"
                          />
                          <Icons name="qr" className="w-6 h-6 text-slate-300" />
                       </div>
@@ -216,14 +216,14 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
                      </div>
                    )}
                    {verifiedName && (
-                     <div className="bg-emerald-50 py-2 px-4 rounded-full border border-emerald-100 flex items-center justify-center gap-2 animate-fluid-fade">
+                     <div className="bg-emerald-50 py-2 px-4 rounded-full border border-emerald-100 flex items-center justify-center gap-2 animate-fluid-fade shadow-sm">
                         <p className="text-[11px] font-black text-emerald-600 uppercase tracking-widest">{verifiedName}</p>
                      </div>
                    )}
                 </div>
 
                 <div className="flex items-center justify-between px-2">
-                   <span className="text-[14px] font-bold text-slate-500">Сохранить</span>
+                   <span className="text-[14px] font-bold text-slate-500">Сохранить как шаблон</span>
                    <div 
                     onClick={() => setSaveCard(!saveCard)}
                     className={`w-11 h-6 rounded-full flex items-center px-0.5 transition-colors shadow-inner ${saveCard ? 'bg-emerald-500' : 'bg-slate-200'}`}
@@ -234,7 +234,7 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
 
                 <div className="space-y-2">
                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Сумма</p>
-                   <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 flex flex-col items-center">
+                   <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 flex flex-col items-center shadow-inner">
                       <div className="flex items-baseline gap-2">
                          <input 
                             type="number" 
@@ -262,21 +262,60 @@ const Transfers: React.FC<TransfersProps> = ({ onSend, cards }) => {
       case 'processing':
         return (
           <div className="fixed inset-0 z-[1000] bg-white flex flex-col items-center justify-center">
-             <div className="w-14 h-14 border-4 border-slate-50 border-t-blue-600 rounded-full animate-spin"></div>
-             <p className="mt-6 text-[11px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Обработка...</p>
+             <div className="w-16 h-16 border-4 border-slate-50 border-t-blue-600 rounded-full animate-spin"></div>
+             <p className="mt-8 text-[11px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Исполнение платежа...</p>
           </div>
         );
 
       case 'success':
+        const finalAmt = parseFloat(amount);
+        const finalFee = getFee(finalAmt);
+        const s = getCurrencySymbol(selectedCard?.currency || 'RUB');
         return (
-          <div className="fixed inset-0 z-[2000] bg-white flex flex-col animate-fluid-up overflow-hidden items-center justify-center px-8 text-center space-y-10">
-              <div className="w-24 h-24 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-inner animate-fluid-scale">
-                  <Icons name="swap" className="w-12 h-12" />
-              </div>
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">Перевод выполнен</h2>
-              <button onClick={() => navigate('/')} className="w-full bg-slate-900 text-white py-6 rounded-[28px] font-black text-base active:scale-95 transition-all shadow-xl">
-                  Закрыть
-              </button>
+          <div className="fixed inset-0 z-[2000] bg-white flex flex-col animate-fluid-up overflow-hidden">
+             {/* Beautiful animated success header */}
+             <div className="h-[45vh] bg-gradient-to-b from-emerald-500 via-emerald-600 to-white flex flex-col items-center justify-center text-white px-8 relative">
+                <div className="absolute top-12 left-0 right-0 flex justify-center opacity-10">
+                   <Icons name="nova" className="w-64 h-64 rotate-12" />
+                </div>
+                
+                <div className="w-28 h-28 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.3)] border border-white/40 animate-fluid-scale">
+                   <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-xl">
+                      <Icons name="swap" className="w-10 h-10" />
+                   </div>
+                </div>
+                
+                <h2 className="text-4xl font-black mt-8 tracking-tighter animate-fluid-up">Выполнено!</h2>
+                <div className="mt-4 flex items-center gap-2 px-5 py-2 bg-black/10 rounded-full backdrop-blur-md border border-white/10">
+                   <Icons name="nova" className="w-4 h-4 text-emerald-300" />
+                   <span className="text-[10px] font-black uppercase tracking-widest leading-none">Платеж успешно проведен</span>
+                </div>
+             </div>
+
+             <div className="flex-1 bg-white px-8 pt-8 flex flex-col items-center">
+                <div className="text-center space-y-2">
+                   <p className="text-5xl font-black text-slate-900 tracking-tighter leading-none">{finalAmt.toLocaleString()} {s}</p>
+                   <p className="text-[15px] font-bold text-slate-400 uppercase tracking-[0.2em] italic">{verifiedName || recipient}</p>
+                </div>
+
+                <div className="w-full bg-slate-50/80 rounded-[40px] p-7 border border-slate-100 space-y-5 mt-10 shadow-sm">
+                   <div className="flex justify-between items-center">
+                      <span className="text-[11px] font-bold text-slate-300 uppercase tracking-widest">Комиссия банка (5%)</span>
+                      <span className="text-sm font-black text-slate-800">+{finalFee.toFixed(2)} {s}</span>
+                   </div>
+                   <div className="h-px bg-slate-200/50"></div>
+                   <div className="flex justify-between items-center">
+                      <span className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Всего списано</span>
+                      <span className="text-2xl font-black text-emerald-600 tracking-tighter">{(finalAmt + finalFee).toFixed(2)} {s}</span>
+                   </div>
+                </div>
+
+                <div className="w-full mt-auto mb-10 px-2">
+                   <button onClick={() => navigate('/')} className="w-full bg-slate-900 text-white py-6 rounded-[28px] font-black text-base active:scale-95 transition-all shadow-2xl shadow-slate-200">
+                      На главную
+                   </button>
+                </div>
+             </div>
           </div>
         );
     }
