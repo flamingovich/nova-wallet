@@ -8,8 +8,8 @@ import History from './pages/History';
 import Exchange from './pages/Exchange';
 import { AppState, Currency } from './types';
 
-// Updated storage key to force reset to zero balances
-const STORAGE_KEY = 'novabank_state_v4_zero';
+// Обновленный ключ для принудительного сброса балансов в 0
+const STORAGE_KEY = 'novabank_state_v6_zero_final';
 
 const INITIAL_STATE: AppState = {
   userName: 'Алексей',
